@@ -1,13 +1,14 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native'
 import { createBottomTabNavigator } from 'react-navigation'
 import PopularPage from "./PopularPage";
-import TrendingPage from "./TrendingPage";
-import FavoritePage from "./FavoritePage";
-import MyPage from "./MyPage";
+import TrendingPage from "./TrendingPage"
+import FavoritePage from "./FavoritePage"
+import MyPage from "./MyPage"
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import NavigationUtil from "../navigator/NavigationUtil";
 // react-native-vector-icons安装后要 react-native link react-native-vector-icons
 export default class HomePage extends Component<Props> {
     tabNavigator() {
@@ -67,6 +68,7 @@ export default class HomePage extends Component<Props> {
         })
     }
     render() {
+        NavigationUtil.navigation = this.props.navigation
         const Tab = this.tabNavigator()
         return <Tab/>
     }

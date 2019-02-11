@@ -16,4 +16,17 @@ export default class NavigationUtil {
     static goBack(navigation) {
         navigation.goBack()
     }
+    /**
+     *  跳转到指定页面
+     */
+    static goPage(page,params) {
+        const navigation = NavigationUtil.navigation
+        if (!navigation) {
+            console.log('navigation cannot be null')
+            return
+        }
+        navigation.navigate(page,{
+            ...params
+        })
+    }
 }
