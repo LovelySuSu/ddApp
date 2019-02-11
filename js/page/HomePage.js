@@ -1,13 +1,31 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
+import { createBottomTabNavigator } from 'react-navigation'
+import PopularPage from "./PopularPage";
+import TrendingPage from "./TrendingPage";
+import FavoritePage from "./FavoritePage";
+import MyPage from "./MyPage";
 
 export default class HomePage extends Component<Props> {
+    tabNavigator() {
+        return createBottomTabNavigator({
+            PopularPage: {
+                screen: PopularPage
+            },
+            TrendingPage: {
+                screen: TrendingPage
+            },
+            FavoritePage: {
+                screen: FavoritePage
+            },
+            MyPage: {
+                screen: MyPage
+            }
+        })
+    }
     render() {
-        return (
-            <View style={styles.container}>
-                <Text style={styles.welcome}>Home Page!</Text>
-            </View>
-        );
+        const Tab = this.tabNavigator()
+        return <Tab/>
     }
 }
 
