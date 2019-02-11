@@ -1,15 +1,18 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
+import NavigationUtil from "../navigator/NavigationUtil";
 
 export default class WelcomePage extends Component<Props> {
     componentDidMount() {
         this.timer = setTimeout(() => {
-            const { navigation } = this.props
-            navigation.navigate('Main')
+            NavigationUtil.resetToHomePage({
+                navigation: this.props.navigation
+            })
         },2000)
     }
     componentWillUnmount() {
-        this.timer && clearTimeout(this.timer)
+        this.timer && clearTimeout(this.timer) // 在timeout内如果杀进程可能会造成页面泄露，因此要在componentWillUnmount周期clearTimeout
+
     }
     render() {
         return (
