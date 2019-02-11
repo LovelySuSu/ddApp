@@ -8,6 +8,7 @@ import FavoritePage from "../page/FavoritePage";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MyPage from "../page/MyPage";
 import NavigationUtil from "./NavigationUtil";
+import { BottomTabBar } from 'react-navigation-tabs'
 const TABS = { // 在这里配置页面的路由
     PopularPage: {
         screen: PopularPage,
@@ -69,17 +70,41 @@ export default class DynamicNavigator extends Component<Props>{
     }
     tabNavigator() {
         const { PopularPage,TrendingPage,FavoritePage,MyPage } = TABS
-        const tabs = { PopularPage,MyPage } //根据需要定制所需的tabs
+        const tabs = { PopularPage,TrendingPage,FavoritePage,MyPage } //根据需要定制所需的tabs
         /**
          * 可以动态修改，比如文案是由后台返回，这里拿到后即可做更改
          */
         // PopularPage.navigationOptions.tabBarLabel = '最新'
-        return createBottomTabNavigator(tabs)
+        return createBottomTabNavigator(tabs,{
+            tabBarComponent: TabBarComponent
+        })
     }
 
     render() {
-        NavigationUtil.navigation = this.props.navigation
         const Tab = this.tabNavigator()
         return <Tab/>
+    }
+}
+class TabBarComponent extends Component{
+    constructor(props){
+        super(props)
+        this.theme = {
+            tintColor: props.activeTintColor,
+            updateTime: new Date().getTime()
+        }
+    }
+    render() {
+        const {routes,index} = this.props.navigation.state
+        if(routes[index].params) {
+            const { theme } = routes[index].params
+            // 以最新的更新时间为主，防止被其他tab覆盖掉
+            if (theme && theme.updateTime > this.theme.updateTime) {
+                this.theme = theme
+            }
+        }
+        return <BottomTabBar
+            {...this.props}
+            activeTintColor = {this.theme.tintColor || this.props.activeTintColor}
+        />
     }
 }

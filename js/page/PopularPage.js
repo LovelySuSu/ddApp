@@ -1,5 +1,9 @@
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import React, { Component } from 'react';
+import {
+    StyleSheet,
+    Text,
+    View
+} from 'react-native';
 import { createMaterialTopTabNavigator } from 'react-navigation'
 import NavigationUtil from "../navigator/NavigationUtil";
 export default class PopularPage extends Component<Props> {
@@ -32,9 +36,7 @@ class PopularTab extends Component<Props> {
         const { tabLabel } = this.props
         return (<View>
             <Text>{tabLabel}</Text>
-            <Text onPress={() => NavigationUtil.goPage('DetailPage',{
-                navigation: this.props.navigation
-            })}>跳转到详情页</Text>
+            <Text onPress={() => NavigationUtil.goPage('DetailPage',{})}>跳转到详情页</Text>
         </View>)
     }
 
