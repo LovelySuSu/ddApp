@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
     StyleSheet,
     Text,
-    View
+    View,
+    Button
 } from 'react-native';
 import { createMaterialTopTabNavigator } from 'react-navigation'
 import NavigationUtil from "../navigator/NavigationUtil";
@@ -15,7 +16,7 @@ export default class PopularPage extends Component<Props> {
         const tabs = {}
         this.tabNames.forEach((item,index)=>{
             tabs[`tab${index}`] = {
-                screen: PopularTab,
+                screen: props => <PopularTab {...props} tabLabel={item}/>,
                 navigationOptions:{
                     title: item
                 }
@@ -51,6 +52,15 @@ class PopularTab extends Component<Props> {
         return (<View>
             <Text>{tabLabel}</Text>
             <Text onPress={() => NavigationUtil.goPage('DetailPage',{})}>跳转到详情页</Text>
+            <Button
+                title={'更改主题颜色'}
+                onPress={() => NavigationUtil.navigation.setParams({
+                    theme: {
+                        tintColor: 'blue',
+                        updateTime: new Date().getTime()
+                    }
+                })}
+            />
         </View>)
     }
 
