@@ -89,8 +89,8 @@ export default class DataStore {
         targetDate.setTime(timestamp)
         if (currentDate.getMonth() !== targetDate.getMonth()) return false;
         if (currentDate.getDate() !== targetDate.getDate()) return false;
-        if (currentDate.getHours() !== targetDate.getHours()) return false;//有效期4个小时
-        if (currentDate.getMinutes() - targetDate.getMinutes() > 1)return false;
+        if (currentDate.getHours() !== targetDate.getHours()) return false;
+        if (currentDate.getMinutes() - targetDate.getMinutes() > 5)return false; //有效期5分钟
         return true;
     }
     wrapData(data) {
