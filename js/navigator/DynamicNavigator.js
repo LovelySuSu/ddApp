@@ -69,13 +69,15 @@ class DynamicNavigator extends Component<Props>{
         console.disableYellowBox = true
     }
     tabNavigator() {
+        // 防止重复创建底部导航栏
+        if (this.Tabs) return this.Tabs
         const { PopularPage,TrendingPage,FavoritePage,MyPage } = TABS
         const tabs = { PopularPage,TrendingPage,FavoritePage,MyPage } //根据需要定制所需的tabs
         /**
          * 可以动态修改，比如文案是由后台返回，这里拿到后即可做更改
          */
         // PopularPage.navigationOptions.tabBarLabel = '最新'
-        return createBottomTabNavigator(tabs,{
+        return this.Tabs = createBottomTabNavigator(tabs,{
             tabBarComponent: props => <TabBarComponent {...props} theme={this.props.theme}/>
         })
     }
