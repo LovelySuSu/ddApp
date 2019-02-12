@@ -52,15 +52,6 @@ class PopularTab extends Component<Props> {
         return (<View>
             <Text>{tabLabel}</Text>
             <Text onPress={() => NavigationUtil.goPage('DetailPage',{})}>跳转到详情页</Text>
-            <Button
-                title={'更改主题颜色'}
-                onPress={() => NavigationUtil.navigation.setParams({
-                    theme: {
-                        tintColor: 'blue',
-                        updateTime: new Date().getTime()
-                    }
-                })}
-            />
         </View>)
     }
 

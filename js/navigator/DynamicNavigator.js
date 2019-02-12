@@ -7,7 +7,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import FavoritePage from "../page/FavoritePage";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MyPage from "../page/MyPage";
-import NavigationUtil from "./NavigationUtil";
+import { connect } from 'react-redux'
 import { BottomTabBar } from 'react-navigation-tabs'
 const TABS = { // 在这里配置页面的路由
     PopularPage: {
@@ -63,7 +63,7 @@ const TABS = { // 在这里配置页面的路由
         }
     }
 }
-export default class DynamicNavigator extends Component<Props>{
+class DynamicNavigator extends Component<Props>{
     constructor(props){
         super(props)
         console.disableYellowBox = true
@@ -76,7 +76,7 @@ export default class DynamicNavigator extends Component<Props>{
          */
         // PopularPage.navigationOptions.tabBarLabel = '最新'
         return createBottomTabNavigator(tabs,{
-            tabBarComponent: TabBarComponent
+            tabBarComponent: props => <TabBarComponent {...props} theme={this.props.theme}/>
         })
     }
 
@@ -88,23 +88,15 @@ export default class DynamicNavigator extends Component<Props>{
 class TabBarComponent extends Component{
     constructor(props){
         super(props)
-        this.theme = {
-            tintColor: props.activeTintColor,
-            updateTime: new Date().getTime()
-        }
     }
     render() {
-        const {routes,index} = this.props.navigation.state
-        if(routes[index].params) {
-            const { theme } = routes[index].params
-            // 以最新的更新时间为主，防止被其他tab覆盖掉
-            if (theme && theme.updateTime > this.theme.updateTime) {
-                this.theme = theme
-            }
-        }
         return <BottomTabBar
             {...this.props}
-            activeTintColor = {this.theme.tintColor || this.props.activeTintColor}
+            activeTintColor = {this.props.theme || this.props.activeTintColor}
         />
     }
 }
+const mapStateToProps = state => ({
+    theme: state.theme.theme
+})
+export default connect(mapStateToProps)(DynamicNavigator)
