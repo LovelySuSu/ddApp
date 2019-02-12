@@ -63,10 +63,9 @@ const styles = StyleSheet.create({
     wrap: {
         flexDirection: 'row',
         marginTop: 10,
-        alignItems: 'center'
+        alignItems: 'center',
     },
     input: {
-        flex: 1,
         height: 30,
         borderColor: '#678',
         borderWidth: 1,

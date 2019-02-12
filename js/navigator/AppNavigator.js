@@ -9,6 +9,7 @@ import DetailPage from "../page/DetailPage";
 import { connect } from 'react-redux'
 import { createReactNavigationReduxMiddleware, reduxifyNavigator } from "react-navigation-redux-helpers";
 import FetchDemo from "../page/FetchDemo";
+import AsyncStorageDemo from "../page/AsyncStorageDemo";
 
 export const rootCom = 'Init'//设置根路由
 
@@ -35,6 +36,12 @@ const mainNavigator = createStackNavigator({
         screen: FetchDemo,
         navigationOptions: {
             title: 'Fetch Demo'
+        }
+    },
+    AsyncStorageDemo: {
+        screen: AsyncStorageDemo,
+        navigationOptions: {
+            title: 'AsyncStorage Demo'
         }
     }
 })

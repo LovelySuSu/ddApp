@@ -17,6 +17,10 @@ class TrendingPage extends Component<Props> {
                     title={'fetch Demo'}
                     onPress={() => NavigationUtil.goPage('FetchDemo',{})}
                 />
+                <Button
+                    title={'async storage Demo'}
+                    onPress={() => NavigationUtil.goPage('AsyncStorageDemo',{})}
+                />
             </View>
         );
     }
