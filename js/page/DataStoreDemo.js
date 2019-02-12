@@ -1,37 +1,24 @@
 import React, {Component} from 'react';
-import {StyleSheet,View,TextInput,Button,Text} from 'react-native';
-
-export default class FetchDemo extends Component<Props> {
+import {StyleSheet,View,TextInput,Button,Text,AsyncStorage} from 'react-native';
+import DataStore from "../expand/dao/DataStore";
+export default class DataStoreDemo extends Component<Props> {
     constructor(props){
         super(props)
         this.state = {
             showText: ''
         }
+        this.dataStore = new DataStore()
     }
-    loadDate = () => {
+    loadData() {
         let url = `https://api.github.com/search/repositories?q=${this.searchKey}`
-        fetch(url)
-            .then(res => res.text())
-            .then(res => this.setState({
-                showText: res
-            }))
-    }
-    loadDate2 = () => {
-        let url = `https://api.github.com/search/repositories?q=${this.searchKey}`
-        fetch(url)
-            .then(res => {
-                if(res.ok) {
-                    return res.text()
-                } else {
-                    throw new Error('request error')
-                }
+        this.dataStore.fetchData(url)
+            .then(data => {
+                let showData = `初次数据加载时间 ${new Date(data.timestamp)}\n ${JSON.stringify(data)}`
+                this.setState({
+                    showText: showData
+                })
             })
-            .then(res => this.setState({
-                showText: res
-            }))
-            .catch(error => {
-                console.log(error)
-            })
+            .catch(error => error && console.log(error))
     }
     render() {
         return (
@@ -46,12 +33,12 @@ export default class FetchDemo extends Component<Props> {
                     />
                     <Button
                         title={'获取数据'}
-                        onPress={()=> this.loadDate2()}
+                        onPress={()=> this.loadData()}
                     />
                 </View>
                 <Text>{this.state.showText}</Text>
             </View>
-        );
+        )
     }
 }
 

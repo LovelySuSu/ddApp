@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import { createReactNavigationReduxMiddleware, reduxifyNavigator } from "react-navigation-redux-helpers";
 import FetchDemo from "../page/FetchDemo";
 import AsyncStorageDemo from "../page/AsyncStorageDemo";
+import DataStoreDemo from "../page/DataStoreDemo";
 
 export const rootCom = 'Init'//设置根路由
 
@@ -42,6 +43,12 @@ const mainNavigator = createStackNavigator({
         screen: AsyncStorageDemo,
         navigationOptions: {
             title: 'AsyncStorage Demo'
+        }
+    },
+    DataStoreDemo: {
+        screen: DataStoreDemo,
+        navigationOptions: {
+            title: 'DataStore Demo'
         }
     }
 })
