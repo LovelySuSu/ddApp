@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { connect } from 'react-redux'
 import actions from "../action";
+import NavigationUtil from "../navigator/NavigationUtil";
 
 class TrendingPage extends Component<Props> {
     render() {
@@ -11,6 +12,10 @@ class TrendingPage extends Component<Props> {
                 <Button
                     title={'改变主题颜色'}
                     onPress={() => this.props.onThemeChange('red')}
+                />
+                <Button
+                    title={'fetch Demo'}
+                    onPress={() => NavigationUtil.goPage('FetchDemo',{})}
                 />
             </View>
         );
