@@ -24,8 +24,14 @@ export function onLoadPopularData(storeName, url) {
 }
 
 function handleData(dispatch,storeName,data) {
+    let items = []
+    if(data && data.data) {
+        data = JSON.parse(data.data)
+        items = data.items
+    }
     dispatch({
         type: Types.POPULAR_LOAD_SUCCESS,
-        items: data && data.data && data.data.items
+        storeName,
+        items: items
     })
 }

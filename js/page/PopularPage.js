@@ -3,7 +3,8 @@ import {
     StyleSheet,
     Text,
     View,
-    Button
+    Button,
+    FlatList
 } from 'react-native';
 import { connect } from 'react-redux'
 import { createMaterialTopTabNavigator } from 'react-navigation'
@@ -50,12 +51,42 @@ export default class PopularPage extends Component<Props> {
 }
 
 class PopularTab extends Component<Props> {
-
-    render() {
+    constructor(props){
+        super(props)
         const { tabLabel } = this.props
+        this.storeName = tabLabel
+    }
+    componentDidMount() {
+        this.onLoadData()
+    }
+    onLoadData() {
+        const { onLoadPopularData } = this.props
+        const url = this.genFetchUrl(this.storeName)
+        onLoadPopularData(this.storeName,url)
+    }
+    genFetchUrl(key) {
+        return `https://api.github.com/search/repositories?q=${key}`
+    }
+    renderItem(item) {
+        return <View style={{marginTop: 10}}>
+            <Text>{JSON.stringify(item)}</Text>
+        </View>
+    }
+    render() {
+        const { popular } = this.props
+        let store = popular[this.storeName]
+        if(!store) {
+            store = {
+                items: [],
+                loading: false
+            }
+        }
         return (<View>
-            <Text>{tabLabel}</Text>
-            <Text onPress={() => NavigationUtil.goPage('DetailPage',{})}>跳转到详情页</Text>
+            <FlatList
+                data={store.items}
+                renderItem={item => this.renderItem(item)}
+                keyExtractor={item => item.id.toString()}
+            />
         </View>)
     }
 }
