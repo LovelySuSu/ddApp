@@ -3,14 +3,14 @@ import {
     StyleSheet,
     Text,
     View,
-    Button,
-    FlatList
+    FlatList,
+    RefreshControl
 } from 'react-native';
 import { connect } from 'react-redux'
 import { createMaterialTopTabNavigator } from 'react-navigation'
-import NavigationUtil from "../navigator/NavigationUtil";
 import actions from "../action";
 
+const THEME_COLOR = 'red'
 export default class PopularPage extends Component<Props> {
     constructor(props){
         super(props)
@@ -78,7 +78,7 @@ class PopularTab extends Component<Props> {
         if(!store) {
             store = {
                 items: [],
-                loading: false
+                isLoading: false
             }
         }
         return (<View>
@@ -86,6 +86,16 @@ class PopularTab extends Component<Props> {
                 data={store.items}
                 renderItem={item => this.renderItem(item)}
                 keyExtractor={item => item.id.toString()}
+                refreshControl={
+                    <RefreshControl
+                        title={'loading'}
+                        titleColor={ THEME_COLOR }
+                        colors={ [THEME_COLOR] }
+                        tintColor={ THEME_COLOR }
+                        refreshing={store.isLoading}
+                        onRefresh={() => this.onLoadData()}
+                    />
+                }
             />
         </View>)
     }
