@@ -124,8 +124,16 @@ class PopularTab extends Component<Props> {
                         onRefresh={() => this.onLoadData(false)}
                     />
                 }
-                onEndReached={() => this.onLoadData(true)}
-                onEndReachedThreshold={0.01}
+                onEndReached={() => {
+                    if(this.canLoadMore){
+                        this.onLoadData(true)
+                        this.canLoadMore = false
+                    }
+                }}
+                onEndReachedThreshold={0.1}
+                onMomentumScrollBegin={() => {
+                    this.canLoadMore = true
+                }}
                 ListFooterComponent={() => this.genIndicator()}
             />
             <Toast
