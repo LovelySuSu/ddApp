@@ -125,10 +125,12 @@ class PopularTab extends Component<Props> {
                     />
                 }
                 onEndReached={() => {
-                    if(this.canLoadMore){
-                        this.onLoadData(true)
-                        this.canLoadMore = false
-                    }
+                    setTimeout(()=>{
+                        if(this.canLoadMore){
+                            this.onLoadData(true)
+                            this.canLoadMore = false
+                        }
+                    })
                 }}
                 onEndReachedThreshold={0.1}
                 onMomentumScrollBegin={() => {
