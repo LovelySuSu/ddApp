@@ -3,7 +3,7 @@ import DataStore from "../../expand/dao/DataStore"
 /**
  * 获取最热数据的异步action
  */
-export function onLoadPopularData(storeName, url) {
+export function onLoadPopularData(storeName, url, pageSize) {
     return dispatch => {
         dispatch({
             type: Types.POPULAR_REFRESH,
@@ -11,7 +11,7 @@ export function onLoadPopularData(storeName, url) {
         })
         let dataStore = new DataStore()
         dataStore.fetchData(url)
-            .then(data => handleData(dispatch,storeName,data))
+            .then(data => handleData(dispatch,storeName,data,pageSize))
             .catch(error => {
                 error && console.log(error)
                 dispatch({
@@ -22,8 +22,43 @@ export function onLoadPopularData(storeName, url) {
             })
     }
 }
-
-function handleData(dispatch,storeName,data) {
+/**
+ * 加载更多
+ * @param storeName
+ * @param pageIndex 第几页
+ * @param pageSize 每页展示条数
+ * @param dataArray 原始数据
+ * @param callBack 回调函数，可以通过回调函数来向调用页面通信：比如异常信息的展示，没有更多等待
+ * @returns {function(*)}
+ */
+export function onLoadMorePopular(storeName,pageIndex,pageSize,dataArray = [],callBack) {
+    return dispatch => {
+        setTimeout(()=> { // 模拟网络请求
+            if ((pageIndex-1) * pageSize >= dataArray.length) { // 已加载完全部数据
+                if(typeof callBack === 'function') {
+                    callBack('已无更多数据')
+                }
+                dispatch({
+                    type: Types.POPULAR_LOAD_MORE_FAIL,
+                    error: 'no more data',
+                    storeName: storeName,
+                    pageIndex: --pageIndex,
+                    projectModes: dataArray
+                })
+            } else {
+                // 本次可载入的最大数量
+                let max = pageSize * pageIndex > dataArray.length ? dataArray.length : pageSize * pageIndex;
+                dispatch({
+                    type: Types.POPULAR_LOAD_MORE_SUCCESS,
+                    storeName: storeName,
+                    pageIndex: pageIndex,
+                    projectModes: dataArray.slice(0,max)
+                })
+            }
+        },500)
+    }
+}
+function handleData(dispatch,storeName,data,pageSize) {
     let items = []
     if(data && data.data) {
         data = JSON.parse(data.data)
@@ -32,6 +67,8 @@ function handleData(dispatch,storeName,data) {
     dispatch({
         type: Types.POPULAR_LOAD_SUCCESS,
         storeName,
-        items: items
+        items: items,
+        projectModes: pageSize > items.length ? items: items.slice(0,pageSize),
+        pageIndex: 1
     })
 }

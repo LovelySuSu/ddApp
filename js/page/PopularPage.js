@@ -4,14 +4,17 @@ import {
     Text,
     View,
     FlatList,
-    RefreshControl
+    RefreshControl,
+    ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux'
 import { createMaterialTopTabNavigator } from 'react-navigation'
 import actions from "../action";
 import PopularItem from "../common/PopularItem";
+import Toast from 'react-native-easy-toast'
 
 const THEME_COLOR = 'red'
+const PAGE_SIZE = 10
 export default class PopularPage extends Component<Props> {
     constructor(props){
         super(props)
@@ -58,12 +61,19 @@ class PopularTab extends Component<Props> {
         this.storeName = tabLabel
     }
     componentDidMount() {
-        this.onLoadData()
+        this.onLoadData(false)
     }
-    onLoadData() {
-        const { onLoadPopularData } = this.props
+    onLoadData(isLoadMore) {
+        const { onLoadPopularData,onLoadMorePopular } = this.props
         const url = this.genFetchUrl(this.storeName)
-        onLoadPopularData(this.storeName,url)
+        let store = this.getStore()
+        if(isLoadMore) {
+            onLoadMorePopular(this.storeName,++store.pageIndex,PAGE_SIZE,store.items,callBack => {
+                this.refs.toast.show('已无更多数据')
+            })
+        } else {
+            onLoadPopularData(this.storeName,url,PAGE_SIZE)
+        }
     }
     genFetchUrl(key) {
         return `https://api.github.com/search/repositories?q=${key}`
@@ -74,18 +84,34 @@ class PopularTab extends Component<Props> {
                 onSelect={()=>console.log('123')}
             />
     }
-    render() {
+    getStore() {
         const { popular } = this.props
         let store = popular[this.storeName]
         if(!store) {
             store = {
                 items: [],
-                isLoading: false
+                projectModes: [],
+                pageIndex: 1,
+                isLoading: false,
+                hideLoadingMore: true
             }
         }
+        return store
+    }
+    genIndicator() {
+        return this.getStore().hideLoadingMore ? null :
+            <View style={styles.indicatorContainer}>
+                <ActivityIndicator
+                    style={styles.indicator}
+                />
+                <Text>正在加载更多</Text>
+            </View>
+    }
+    render() {
+        let store = this.getStore()
         return (<View>
             <FlatList
-                data={store.items}
+                data={store.projectModes}
                 renderItem={({item}) => this.renderItem(item)}
                 keyExtractor={item => item.id.toString()}
                 refreshControl={
@@ -95,9 +121,16 @@ class PopularTab extends Component<Props> {
                         colors={ [THEME_COLOR] }
                         tintColor={ THEME_COLOR }
                         refreshing={store.isLoading}
-                        onRefresh={() => this.onLoadData()}
+                        onRefresh={() => this.onLoadData(false)}
                     />
                 }
+                onEndReached={() => this.onLoadData(true)}
+                onEndReachedThreshold={0.01}
+                ListFooterComponent={() => this.genIndicator()}
+            />
+            <Toast
+                ref={'toast'}
+                position={'center'}
             />
         </View>)
     }
@@ -106,7 +139,8 @@ const mapStateToProps = state => ({
     popular: state.popular
 })
 const mapDispatchToProps = dispatch => ({
-    onLoadPopularData: (storeName,url) => dispatch(actions.onLoadPopularData(storeName,url))
+    onLoadPopularData: (storeName,url,pageSize) => dispatch(actions.onLoadPopularData(storeName,url,pageSize)),
+    onLoadMorePopular: (storeName,pageIndex,pageSize,dataArray,callBack) => dispatch(actions.onLoadMorePopular(storeName,pageIndex,pageSize,dataArray,callBack))
 })
 const PopularTabPage = connect(mapStateToProps,mapDispatchToProps)(PopularTab)
 const styles = StyleSheet.create({
@@ -127,5 +161,12 @@ const styles = StyleSheet.create({
         fontSize: 13,
         marginVertical: 6,
         textAlign: 'center',
+    },
+    indicatorContainer: {
+        alignItems: "center"
+    },
+    indicator: {
+        color: 'red',
+        margin: 10
     }
 });
