@@ -4,16 +4,15 @@ export default class DataStore {
     /**
      * 获取数据，优先获取本地数据，如果无本地数据或本地数据过期则获取网络数据
      * @param url
-     * @param flag
      * @returns {Promise}
      */
-    fetchData(url, flag) {
+    fetchData(url) {
         return new Promise((resolve, reject) => {
             this.fetchLocalData(url).then((wrapData) => {
                 if (wrapData && DataStore.checkTimestampValid(wrapData.timestamp)) {
                     resolve(wrapData)
                 } else {
-                    this.fetchNetData(url, flag).then((data) => {
+                    this.fetchNetData(url).then((data) => {
                         resolve(this.wrapData(data))
                     }).catch((error) => {
                         reject(error)
@@ -21,7 +20,7 @@ export default class DataStore {
                 }
 
             }).catch((error) => {
-                this.fetchNetData(url, flag).then((data) => {
+                this.fetchNetData(url).then((data) => {
                     resolve(this.wrapData(data))
                 }).catch((error => {
                     reject(error)

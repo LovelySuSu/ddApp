@@ -5,8 +5,11 @@ import {
     View,
     Button
 } from 'react-native';
+import { connect } from 'react-redux'
 import { createMaterialTopTabNavigator } from 'react-navigation'
 import NavigationUtil from "../navigator/NavigationUtil";
+import actions from "../action";
+
 export default class PopularPage extends Component<Props> {
     constructor(props){
         super(props)
@@ -16,7 +19,7 @@ export default class PopularPage extends Component<Props> {
         const tabs = {}
         this.tabNames.forEach((item,index)=>{
             tabs[`tab${index}`] = {
-                screen: props => <PopularTab {...props} tabLabel={item}/>,
+                screen: props => <PopularTabPage {...props} tabLabel={item}/>,
                 navigationOptions:{
                     title: item
                 }
@@ -47,6 +50,7 @@ export default class PopularPage extends Component<Props> {
 }
 
 class PopularTab extends Component<Props> {
+
     render() {
         const { tabLabel } = this.props
         return (<View>
@@ -54,8 +58,14 @@ class PopularTab extends Component<Props> {
             <Text onPress={() => NavigationUtil.goPage('DetailPage',{})}>跳转到详情页</Text>
         </View>)
     }
-
 }
+const mapStateToProps = state => ({
+    popular: state.popular
+})
+const mapDispatchToProps = dispatch => ({
+    onLoadPopularData: (storeName,url) => dispatch(actions.onLoadPopularData(storeName,url))
+})
+const PopularTabPage = connect(mapStateToProps,mapDispatchToProps)(PopularTab)
 const styles = StyleSheet.create({
     container: {
         flex: 1,
