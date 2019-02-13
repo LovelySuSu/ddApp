@@ -9,6 +9,7 @@ import {
 import { connect } from 'react-redux'
 import { createMaterialTopTabNavigator } from 'react-navigation'
 import actions from "../action";
+import PopularItem from "../common/PopularItem";
 
 const THEME_COLOR = 'red'
 export default class PopularPage extends Component<Props> {
@@ -68,9 +69,10 @@ class PopularTab extends Component<Props> {
         return `https://api.github.com/search/repositories?q=${key}`
     }
     renderItem(item) {
-        return <View style={{marginTop: 10}}>
-            <Text>{JSON.stringify(item)}</Text>
-        </View>
+        return <PopularItem
+                item={item}
+                onSelect={()=>console.log('123')}
+            />
     }
     render() {
         const { popular } = this.props
@@ -84,7 +86,7 @@ class PopularTab extends Component<Props> {
         return (<View>
             <FlatList
                 data={store.items}
-                renderItem={item => this.renderItem(item)}
+                renderItem={({item}) => this.renderItem(item)}
                 keyExtractor={item => item.id.toString()}
                 refreshControl={
                     <RefreshControl
