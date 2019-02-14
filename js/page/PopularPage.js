@@ -38,7 +38,8 @@ export default class PopularPage extends Component<Props> {
                 upperCaseLabel: false, // 是否使用标签大写，默认为true
                 scrollEnabled: true, // 是否支持选项卡滚动，默认为false
                 style: {
-                    backgroundColor: '#678' // tabBar 背景颜色
+                    backgroundColor: '#678', // tabBar 背景颜色
+                    height: 30 //设置高度，修复Android上显示问题
                 },
                 indicatorStyle: styles.indicatorStyle, // 标签指示器的样式
                 labelStyle: styles.labelStyle
@@ -169,7 +170,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5FCFF',
     },
     tabStyle: {
-        minWidth: 50,
+        // minWidth: 50, 修复android上tabBar首次渲染闪烁问题
+        padding: 0
     },
     indicatorStyle: {
         height: 2,
@@ -177,8 +179,9 @@ const styles = StyleSheet.create({
     },
     labelStyle: {
         fontSize: 13,
-        marginVertical: 6,
+        // marginVertical: 6,
         textAlign: 'center',
+        margin: 0
     },
     indicatorContainer: {
         alignItems: "center"
