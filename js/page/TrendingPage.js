@@ -73,24 +73,30 @@ export default class TrendingPage extends Component<Props> {
             onSelect={(tab) => this.onSelectTimeSpan(tab)}
         />
     }
+    navBar() {
+        if(!this.tabBar) {
+            this.tabBar = createMaterialTopTabNavigator(this.genTabs(), {
+                tabBarOptions: {
+                    tabStyle: styles.tabStyle,
+                    upperCaseLabel: false, // 是否使用标签大写，默认为true
+                    scrollEnabled: true, // 是否支持选项卡滚动，默认为false
+                    style: {
+                        backgroundColor: THEME_COLOR, // tabBar 背景颜色
+                        height: 30 //设置高度，修复Android上显示问题
+                    },
+                    indicatorStyle: styles.indicatorStyle, // 标签指示器的样式
+                    labelStyle: styles.labelStyle
+                }
+            })
+        }
+        return this.tabBar
+    }
     render() {
         let statusBar = {
             backgroundColor: THEME_COLOR,
             barStyle: 'light-content'
         }
-        const TabNavigator = createMaterialTopTabNavigator(this.genTabs(), {
-            tabBarOptions: {
-                tabStyle: styles.tabStyle,
-                upperCaseLabel: false, // 是否使用标签大写，默认为true
-                scrollEnabled: true, // 是否支持选项卡滚动，默认为false
-                style: {
-                    backgroundColor: THEME_COLOR, // tabBar 背景颜色
-                    height: 30 //设置高度，修复Android上显示问题
-                },
-                indicatorStyle: styles.indicatorStyle, // 标签指示器的样式
-                labelStyle: styles.labelStyle
-            }
-        })
+        const TabNavigator = this.navBar()
         return (
             <View style={{ flex: 1 }}>
                 <NavigationBar
