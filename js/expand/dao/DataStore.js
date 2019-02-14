@@ -1,6 +1,6 @@
 import { AsyncStorage } from "react-native";
 import {FLAG_STORAGE} from "../../constant";
-import Trending from 'GitHubTrending'
+import GitHubTrending from 'GitHubTrending'
 
 export default class DataStore {
     /**
@@ -81,12 +81,17 @@ export default class DataStore {
                     .catch(error => reject(error))
             })
         } else {
-            new Trending().fetchTrending(url)
+            new GitHubTrending().fetchTrending(url)
                 .then(items => {
-                    this.saveData(url,items)
+                    if (!items) {
+                        throw new Error('responseData is null')
+                    }
+                    this.saveData(url, items)
                     resolve(items)
                 })
-                .catch(error => reject(error))
+                .catch(error => {
+                    reject(error)
+                })
         }
 
     }
@@ -102,7 +107,7 @@ export default class DataStore {
         if (currentDate.getMonth() !== targetDate.getMonth()) return false;
         if (currentDate.getDate() !== targetDate.getDate()) return false;
         if (currentDate.getHours() !== targetDate.getHours()) return false;
-        if (currentDate.getMinutes() - targetDate.getMinutes() > 5)return false; //有效期5分钟
+        if (currentDate.getMinutes() - targetDate.getMinutes() > 1)return false; //有效期5分钟
         return true;
     }
     wrapData(data) {
