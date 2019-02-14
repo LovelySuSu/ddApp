@@ -6,7 +6,8 @@ import {
     FlatList,
     RefreshControl,
     ActivityIndicator,
-    TouchableOpacity
+    TouchableOpacity,
+    DeviceEventEmitter
 } from 'react-native';
 import { connect } from 'react-redux'
 import { createMaterialTopTabNavigator } from 'react-navigation'
@@ -17,6 +18,7 @@ import { PAGE_SIZE, THEME_COLOR, TimeSpans, TRENDING_URL } from '../constant'
 import NavigationBar from "../common/NavigationBar";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import TrendingDialog from "../common/TrendingDialog";
+import {EVENT_TYPE_TIME_SPAN_CHANGE} from "../emit";
 export default class TrendingPage extends Component<Props> {
     constructor(props){
         super(props)
@@ -66,6 +68,7 @@ export default class TrendingPage extends Component<Props> {
         this.setState({
             timeSpan: tab
         })
+        DeviceEventEmitter.emit(EVENT_TYPE_TIME_SPAN_CHANGE,tab)
     }
     renderDialog() {
         return <TrendingDialog
@@ -120,7 +123,16 @@ class TrendingTab extends Component<Props> {
         this.timeSpan = timeSpan
     }
     componentDidMount() {
+        this.timeSpanChangeListener = DeviceEventEmitter.addListener(EVENT_TYPE_TIME_SPAN_CHANGE,(timeSpan)=>{
+            this.timeSpan = timeSpan
+            this.onLoadData(false)
+        })
         this.onLoadData(false)
+    }
+    componentWillUnmount() {
+        if(this.timeSpanChangeListener) {
+            this.timeSpanChangeListener.remove()
+        }
     }
     onLoadData(isLoadMore) {
         const { onTrendingRefresh,onLoadMoreTrending } = this.props
