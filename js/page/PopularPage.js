@@ -12,9 +12,8 @@ import { createMaterialTopTabNavigator } from 'react-navigation'
 import actions from "../action";
 import PopularItem from "../common/PopularItem";
 import Toast from 'react-native-easy-toast'
-
-const THEME_COLOR = 'red'
-const PAGE_SIZE = 10
+import { PAGE_SIZE, THEME_COLOR,POPULAR_URL} from '../constant'
+import NavigationBar from "../common/NavigationBar";
 export default class PopularPage extends Component<Props> {
     constructor(props){
         super(props)
@@ -45,8 +44,17 @@ export default class PopularPage extends Component<Props> {
                 labelStyle: styles.labelStyle
             }
         })
+        let statusBar = {
+            backgroundColor: THEME_COLOR,
+            barStyle: 'light-content'
+        }
         return (
-            <View style={{ flex: 1,marginTop: 30 }}>
+            <View style={{ flex: 1 }}>
+                <NavigationBar
+                    title={'最热'}
+                    statusBar={statusBar}
+                    style={{ backgroundColor: THEME_COLOR }}
+                />
                 <TabTopNavigator/>
             </View>
 
@@ -76,7 +84,7 @@ class PopularTab extends Component<Props> {
         }
     }
     genFetchUrl(key) {
-        return `https://api.github.com/search/repositories?q=${key}`
+        return `${POPULAR_URL}${key}`
     }
     renderItem(item) {
         return <PopularItem
