@@ -85,7 +85,7 @@ class TrendingTab extends Component<Props> {
     }
     genFetchUrl(key) {
         if(key === 'All') key=''
-        return `${TRENDING_URL}/${key}?since=daily`
+        return `${TRENDING_URL}${key?'/'+key : ''}?since=daily`
     }
     renderItem(item) {
         return <TrendingItem

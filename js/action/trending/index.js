@@ -3,7 +3,7 @@ import DataStore from "../../expand/dao/DataStore"
 import { FLAG_STORAGE } from "../../constant";
 import { handleData } from "../ActionUtil";
 /**
- * 获取最热数据的异步action
+ * 获取趋势数据的异步action
  */
 export function onTrendingRefresh(storeName, url, pageSize) {
     return dispatch => {

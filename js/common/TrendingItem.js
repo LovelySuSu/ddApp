@@ -7,6 +7,7 @@ import {
     StyleSheet
 } from 'react-native'
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import HTMLView from 'react-native-htmlview'
 export default class TrendingItem extends Component{
     render() {
         const { item,onSelect } = this.props
@@ -24,12 +25,21 @@ export default class TrendingItem extends Component{
                 />
             </TouchableOpacity>
         )
+        let description = '<p>' + item.description + '</p>'
         return (
             <TouchableOpacity
                 onPress={ ()=> onSelect()}
             >
                 <View style={S.container}>
                     <Text style={S.title}>{item.full_name}</Text>
+                    <HTMLView
+                        value={description}
+                        onLinkPress={(url)=>{}}
+                        stylesheet={{
+                            p: S.description,
+                            a: S.description
+                        }}
+                    />
                     <Text style={S.description}>{item.description}</Text>
                     <Text style={S.description}>{item.meta}</Text>
                     <View style={S.wrap}>

@@ -64,8 +64,8 @@ export default class DataStore {
      * 获取服务器数据
      * */
     fetchNetData(url,flag) {
-        if (flag === FLAG_STORAGE.flag_popular) {
-            return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
+            if (flag === FLAG_STORAGE.flag_popular) {
                 fetch(url)
                     .then(res => {
                         if(res.ok) {
@@ -79,20 +79,20 @@ export default class DataStore {
                         resolve(responseData)
                     })
                     .catch(error => reject(error))
-            })
-        } else {
-            new GitHubTrending().fetchTrending(url)
-                .then(items => {
-                    if (!items) {
-                        throw new Error('responseData is null')
-                    }
-                    this.saveData(url, items)
-                    resolve(items)
-                })
-                .catch(error => {
-                    reject(error)
-                })
-        }
+            } else {
+                new GitHubTrending().fetchTrending(url)
+                    .then(items => {
+                        if (!items) {
+                            throw new Error('responseData is null')
+                        }
+                        this.saveData(url, items)
+                        resolve(items)
+                    })
+                    .catch(error => {
+                        reject(error)
+                    })
+            }
+        })
 
     }
     /**
