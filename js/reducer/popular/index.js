@@ -21,7 +21,7 @@ export default function onAction(state=defaultState,action) {
                 [action.storeName] : {
                     ...state[action.storeName],
                     pageIndex: action.pageIndex,
-                    isLoading: true
+                    isLoading: true,
                 }
             }
             break
@@ -42,7 +42,8 @@ export default function onAction(state=defaultState,action) {
                 ...state,
                 [action.storeName] : {
                     ...state[action.storeName],
-                    isLoading: false
+                    isLoading: false,
+                    hideLoadingMore: true,
                 }
             }
             break

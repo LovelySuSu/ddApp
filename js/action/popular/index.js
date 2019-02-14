@@ -1,5 +1,6 @@
 import Types from "../types"
 import DataStore from "../../expand/dao/DataStore"
+import {FLAG_STORAGE} from "../../constant";
 /**
  * 获取最热数据的异步action
  */
@@ -10,7 +11,7 @@ export function onLoadPopularData(storeName, url, pageSize) {
             storeName: storeName
         })
         let dataStore = new DataStore()
-        dataStore.fetchData(url)
+        dataStore.fetchData(url,FLAG_STORAGE.flag_popular)
             .then(data => handleData(dispatch,storeName,data,pageSize))
             .catch(error => {
                 error && console.log(error)

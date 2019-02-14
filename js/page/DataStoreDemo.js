@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet,View,TextInput,Button,Text,AsyncStorage} from 'react-native';
 import DataStore from "../expand/dao/DataStore";
+import {FLAG_STORAGE} from "../constant";
 export default class DataStoreDemo extends Component<Props> {
     constructor(props){
         super(props)
@@ -11,7 +12,7 @@ export default class DataStoreDemo extends Component<Props> {
     }
     loadData() {
         let url = `https://api.github.com/search/repositories?q=${this.searchKey}`
-        this.dataStore.fetchData(url)
+        this.dataStore.fetchData(url,FLAG_STORAGE.flag_popular)
             .then(data => {
                 let showData = `初次数据加载时间 ${new Date(data.timestamp)}\n ${JSON.stringify(data)}`
                 this.setState({

@@ -1,4 +1,6 @@
 import { AsyncStorage } from "react-native";
+import {FLAG_STORAGE} from "../../constant";
+import Trending from 'GitHubTrending'
 
 export default class DataStore {
     /**
@@ -6,13 +8,13 @@ export default class DataStore {
      * @param url
      * @returns {Promise}
      */
-    fetchData(url) {
+    fetchData(url,flag) {
         return new Promise((resolve, reject) => {
             this.fetchLocalData(url).then((wrapData) => {
                 if (wrapData && DataStore.checkTimestampValid(wrapData.timestamp)) {
                     resolve(wrapData)
                 } else {
-                    this.fetchNetData(url).then((data) => {
+                    this.fetchNetData(url,flag).then((data) => {
                         resolve(this.wrapData(data))
                     }).catch((error) => {
                         reject(error)
@@ -20,7 +22,7 @@ export default class DataStore {
                 }
 
             }).catch((error) => {
-                this.fetchNetData(url).then((data) => {
+                this.fetchNetData(url,flag).then((data) => {
                     resolve(this.wrapData(data))
                 }).catch((error => {
                     reject(error)
@@ -51,6 +53,7 @@ export default class DataStore {
                         e && console.log(e);
                     }
                 } else {
+                    let e = new Error('数据异常')
                     reject(error);
                     e && console.log(e);
                 }
@@ -60,22 +63,32 @@ export default class DataStore {
     /**
      * 获取服务器数据
      * */
-    fetchNetData(url) {
-        return new Promise((resolve, reject) => {
-           fetch(url)
-                .then(res => {
-                    if(res.ok) {
-                        console.log('===== 使用服务器数据 ====\n', JSON.stringify(res))
-                        return res.text()
-                    }
-                    throw new Error('error')
+    fetchNetData(url,flag) {
+        if (flag === FLAG_STORAGE.flag_popular) {
+            return new Promise((resolve, reject) => {
+                fetch(url)
+                    .then(res => {
+                        if(res.ok) {
+                            console.log('===== 使用服务器数据 ====\n', JSON.stringify(res))
+                            return res.text()
+                        }
+                        throw new Error('error')
+                    })
+                    .then(responseData => {
+                        this.saveData(url,responseData)
+                        resolve(responseData)
+                    })
+                    .catch(error => reject(error))
+            })
+        } else {
+            new Trending().fetchTrending(url)
+                .then(items => {
+                    this.saveData(url,items)
+                    resolve(items)
                 })
-               .then(responseData => {
-                   this.saveData(url,responseData)
-                   resolve(responseData)
-               })
                 .catch(error => reject(error))
-        })
+        }
+
     }
     /**
      * 检查timestamp是否在有效期内
