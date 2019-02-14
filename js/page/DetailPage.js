@@ -3,7 +3,8 @@ import {
     StyleSheet,
     Text,
     View,
-    TouchableOpacity
+    TouchableOpacity,
+    WebView
 } from 'react-native';
 import {BASE_URL, THEME_COLOR} from "../constant";
 import NavigationBar from "../common/NavigationBar";
@@ -38,6 +39,17 @@ export default class DetailPage extends Component<Props> {
             </View>
         )
     }
+    onNavigationStateChange(navState) {
+        this.setState({
+            canGoBack: navState.canGoBack,
+            url: navState.url
+        })
+    }
+    goBack() {
+        if(this.state.canGoBack) {
+            this.webview.goBack()
+        } else NavigationUtil.goBack(this.props.navigation)
+    }
     render() {
         let statusBar = {
             backgroundColor: THEME_COLOR,
@@ -48,13 +60,17 @@ export default class DetailPage extends Component<Props> {
                 <NavigationBar
                     title={this.state.title}
                     statusBar={statusBar}
-                    leftButton={ViewUtil.getLeftBackButton(()=> {
-                        NavigationUtil.goBack(this.props.navigation)
-                    })}
+                    leftButton={ViewUtil.getLeftBackButton(()=> this.goBack())}
                     rightButton={this.renderRightButton()}
                     style={{ backgroundColor: THEME_COLOR }}
+                    titleLayoutStyle={{ paddingHorizontal: 30 }}
                 />
-                <Text>Detail Page!</Text>
+                <WebView
+                    ref={(webview) => this.webview = webview}
+                    startInLoadingState={true}
+                    onNavigationStateChange={(e) => this.onNavigationStateChange(e)}
+                    source={{uri: this.state.url}}
+                />
             </View>
         );
     }

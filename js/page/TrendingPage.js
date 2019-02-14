@@ -19,6 +19,7 @@ import NavigationBar from "../common/NavigationBar";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import TrendingDialog from "../common/TrendingDialog";
 import {EVENT_TYPE_TIME_SPAN_CHANGE} from "../emit";
+import NavigationUtil from "../navigator/NavigationUtil";
 export default class TrendingPage extends Component<Props> {
     constructor(props){
         super(props)
@@ -153,7 +154,10 @@ class TrendingTab extends Component<Props> {
     renderItem(item) {
         return <TrendingItem
             item={item}
-            onSelect={()=>console.log('123')}
+            onSelect={() => NavigationUtil.goPage('DetailPage',{
+                navigation: this.props.navigation,
+                projectMode: item
+            })}
         />
     }
     getStore() {

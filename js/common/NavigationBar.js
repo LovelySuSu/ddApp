@@ -6,7 +6,8 @@ import {
     StatusBar,
     StyleSheet,
     Platform,
-    Text
+    Text,
+    DeviceInfo
 } from "react-native"
 import {NAV_BAR_HEIGHT_ANDROID, NAV_BAR_HEIGHT_IOS, STATUS_BAR_HEIGHT} from "../constant";
 const StatusBarShape = { // 设置状态栏接受的属性
@@ -87,7 +88,8 @@ const S = StyleSheet.create({
         bottom: 0
     },
     container: {
-        backgroundColor: '#2196f3'
+        backgroundColor: '#2196f3',
+        paddingTop: DeviceInfo.isIPhoneX_deprecated ? 10: 0
     },
     navBarButton: {
         alignItems: 'center'
