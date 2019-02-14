@@ -11,11 +11,13 @@ import NavigationBar from "../common/NavigationBar";
 import ViewUtil from "../util/ViewUtil";
 import NavigationUtil from "../navigator/NavigationUtil";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import BackPressHandler from "../common/BackPressHandler";
 
 export default class DetailPage extends Component<Props> {
     constructor(props){
         super(props)
         this.params = this.props.navigation.state.params
+        this.backPress = new BackPressHandler({backPress:() => this.goBack})
         const { projectMode } = this.params
         let url = projectMode.html_url || BASE_URL + projectMode.fullName
         let title = projectMode.full_name || projectMode.fullName
@@ -24,6 +26,12 @@ export default class DetailPage extends Component<Props> {
             url: url,
             canGoBack: false
         }
+    }
+    componentDidMount() {
+        this.backPress.componentDidMount()
+    }
+    componentWillUnmount() {
+        this.backPress.componentWillUnmount()
     }
     renderRightButton(){
         return (<View style={{flexDirection: 'row'}}>
