@@ -14,6 +14,7 @@ import PopularItem from "../common/PopularItem";
 import Toast from 'react-native-easy-toast'
 import { PAGE_SIZE, THEME_COLOR,POPULAR_URL} from '../constant'
 import NavigationBar from "../common/NavigationBar";
+import NavigationUtil from "../navigator/NavigationUtil";
 export default class PopularPage extends Component<Props> {
     constructor(props){
         super(props)
@@ -90,7 +91,10 @@ class PopularTab extends Component<Props> {
     renderItem(item) {
         return <PopularItem
                 item={item}
-                onSelect={()=>console.log('123')}
+                onSelect={() => NavigationUtil.goPage('DetailPage',{
+                    navigation: this.props.navigation,
+                    projectMode: item
+                })}
             />
     }
     getStore() {

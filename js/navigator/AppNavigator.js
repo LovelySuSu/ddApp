@@ -31,7 +31,10 @@ const mainNavigator = createStackNavigator({
         }
     },
     DetailPage: {
-        screen: DetailPage
+        screen: DetailPage,
+        navigationOptions: {
+            header: null // 禁用navigation bar,全屏显示t 
+        }
     },
     FetchDemo: {
         screen: FetchDemo,
