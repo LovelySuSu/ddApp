@@ -5,7 +5,8 @@ import {
     View,
     FlatList,
     RefreshControl,
-    ActivityIndicator
+    ActivityIndicator,
+    TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux'
 import { createMaterialTopTabNavigator } from 'react-navigation'
@@ -14,6 +15,7 @@ import TrendingItem from "../common/TrendingItem";
 import Toast from 'react-native-easy-toast'
 import {navBarMargin, PAGE_SIZE, THEME_COLOR, TRENDING_URL} from '../constant'
 import NavigationBar from "../common/NavigationBar";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 export default class TrendingPage extends Component<Props> {
     constructor(props){
         super(props)
@@ -31,6 +33,28 @@ export default class TrendingPage extends Component<Props> {
         })
         return tabs
     }
+    renderTitleView() {
+        return (
+            <View>
+                <TouchableOpacity
+                    underlayColor='transparent'
+                >
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Text style={{
+                            fontSize: 18,
+                            color: '#FFFFFF',
+                            fontWeight: '400'
+                        }}>趋势 {'今天'}</Text>
+                        <MaterialIcons
+                            name={'arrow-drop-down'}
+                            size={22}
+                            style={{color: 'white'}}
+                        />
+                    </View>
+                </TouchableOpacity>
+            </View>
+        )
+    }
     render() {
         const TabTopNavigator = createMaterialTopTabNavigator(this.genTabs(),{
             tabBarOptions: {
@@ -38,7 +62,7 @@ export default class TrendingPage extends Component<Props> {
                 upperCaseLabel: false, // 是否使用标签大写，默认为true
                 scrollEnabled: true, // 是否支持选项卡滚动，默认为false
                 style: {
-                    backgroundColor: '#678', // tabBar 背景颜色
+                    backgroundColor: THEME_COLOR, // tabBar 背景颜色
                     height: 30 //设置高度，修复Android上显示问题
                 },
                 indicatorStyle: styles.indicatorStyle, // 标签指示器的样式
@@ -52,7 +76,7 @@ export default class TrendingPage extends Component<Props> {
         return (
             <View style={{ flex: 1 }}>
                 <NavigationBar
-                    title={'趋势'}
+                    titleView={this.renderTitleView()}
                     statusBar={statusBar}
                     style={{ backgroundColor: THEME_COLOR }}
                 />

@@ -38,7 +38,7 @@ export default class PopularPage extends Component<Props> {
                 upperCaseLabel: false, // 是否使用标签大写，默认为true
                 scrollEnabled: true, // 是否支持选项卡滚动，默认为false
                 style: {
-                    backgroundColor: '#678', // tabBar 背景颜色
+                    backgroundColor: THEME_COLOR, // tabBar 背景颜色
                     height: 30 //设置高度，修复Android上显示问题
                 },
                 indicatorStyle: styles.indicatorStyle, // 标签指示器的样式
