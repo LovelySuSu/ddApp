@@ -14,6 +14,7 @@ import TrendingItem from "../common/TrendingItem";
 import Toast from 'react-native-easy-toast'
 import {navBarMargin, PAGE_SIZE, THEME_COLOR, TRENDING_URL} from '../constant'
 import NavigationBar from "../common/NavigationBar";
+import TrendingDialog from "../common/TrendingDialog";
 export default class TrendingPage extends Component<Props> {
     constructor(props){
         super(props)
@@ -71,6 +72,8 @@ class TrendingTab extends Component<Props> {
     }
     componentDidMount() {
         this.onLoadData(false)
+        let tradingDialog= new TrendingDialog()
+        tradingDialog.show()
     }
     onLoadData(isLoadMore) {
         const { onTrendingRefresh,onLoadMoreTrending } = this.props
