@@ -4,13 +4,18 @@ import { NavigationActions } from 'react-navigation'
 import NavigationUtil from '../navigator/NavigationUtil'
 import DynamicNavigator from "../navigator/DynamicNavigator"
 import { connect } from "react-redux"
+import BackPressHandler from "../common/BackPressHandler";
 // react-native-vector-icons安装后要 react-native link react-native-vector-icons
 class HomePage extends Component<Props> {
+    constructor(props){
+        super(props)
+        this.backPress = new BackPressHandler({backPress:this.onBackPress})
+    }
     componentDidMount() {
-        BackHandler.addEventListener('hardwareBackPress',this.onBackPress)
+        this.backPress.componentDidMount()
     }
     componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress',this.onBackPress)
+        this.backPress.componentWillUnmount()
     }
     /**
      * 处理Android的物理返回键
