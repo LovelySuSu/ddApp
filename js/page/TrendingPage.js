@@ -13,19 +13,24 @@ import { createMaterialTopTabNavigator } from 'react-navigation'
 import actions from "../action";
 import TrendingItem from "../common/TrendingItem";
 import Toast from 'react-native-easy-toast'
-import {navBarMargin, PAGE_SIZE, THEME_COLOR, TRENDING_URL} from '../constant'
+import { PAGE_SIZE, THEME_COLOR, TimeSpans, TRENDING_URL } from '../constant'
 import NavigationBar from "../common/NavigationBar";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import TrendingDialog from "../common/TrendingDialog";
 export default class TrendingPage extends Component<Props> {
     constructor(props){
         super(props)
         this.tabNames = ['All','Java','Javascript','C#','PHP']
+        this.dialog = null
+        this.state = {
+            timeSpan: TimeSpans[0]
+        }
     }
     genTabs() {
         const tabs = {}
         this.tabNames.forEach((item,index)=>{
             tabs[`tab${index}`] = {
-                screen: props => <TrendingTabPage {...props} tabLabel={item}/>,
+                screen: props => <TrendingTabPage {...props} tabLabel={item} timeSpan={this.state.timeSpan}/>,
                 navigationOptions:{
                     title: item
                 }
@@ -38,13 +43,14 @@ export default class TrendingPage extends Component<Props> {
             <View>
                 <TouchableOpacity
                     underlayColor='transparent'
+                    onPress={() => this.dialog.show()}
                 >
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                         <Text style={{
                             fontSize: 18,
                             color: '#FFFFFF',
                             fontWeight: '400'
-                        }}>趋势 {'今天'}</Text>
+                        }}>趋势 {this.state.timeSpan.showText}</Text>
                         <MaterialIcons
                             name={'arrow-drop-down'}
                             size={22}
@@ -55,8 +61,24 @@ export default class TrendingPage extends Component<Props> {
             </View>
         )
     }
+    onSelectTimeSpan(tab) {
+        this.dialog.hide()
+        this.setState({
+            timeSpan: tab
+        })
+    }
+    renderDialog() {
+        return <TrendingDialog
+            ref={(dialog) => this.dialog = dialog}
+            onSelect={(tab) => this.onSelectTimeSpan(tab)}
+        />
+    }
     render() {
-        const TabTopNavigator = createMaterialTopTabNavigator(this.genTabs(),{
+        let statusBar = {
+            backgroundColor: THEME_COLOR,
+            barStyle: 'light-content'
+        }
+        const TabNavigator = createMaterialTopTabNavigator(this.genTabs(), {
             tabBarOptions: {
                 tabStyle: styles.tabStyle,
                 upperCaseLabel: false, // 是否使用标签大写，默认为true
@@ -69,10 +91,6 @@ export default class TrendingPage extends Component<Props> {
                 labelStyle: styles.labelStyle
             }
         })
-        let statusBar = {
-            backgroundColor: THEME_COLOR,
-            barStyle: 'light-content'
-        }
         return (
             <View style={{ flex: 1 }}>
                 <NavigationBar
@@ -80,7 +98,8 @@ export default class TrendingPage extends Component<Props> {
                     statusBar={statusBar}
                     style={{ backgroundColor: THEME_COLOR }}
                 />
-                <TabTopNavigator/>
+                <TabNavigator/>
+                {this.renderDialog()}
             </View>
 
         );
@@ -90,8 +109,9 @@ export default class TrendingPage extends Component<Props> {
 class TrendingTab extends Component<Props> {
     constructor(props){
         super(props)
-        const { tabLabel } = this.props
+        const { tabLabel,timeSpan } = this.props
         this.storeName = tabLabel
+        this.timeSpan = timeSpan
     }
     componentDidMount() {
         this.onLoadData(false)
@@ -110,7 +130,7 @@ class TrendingTab extends Component<Props> {
     }
     genFetchUrl(key) {
         if(key === 'All') key=''
-        return `${TRENDING_URL}${key?'/'+key : ''}?since=daily`
+        return `${TRENDING_URL}${key?'/'+key : ''}?since=${this.timeSpan.searchText}`
     }
     renderItem(item) {
         return <TrendingItem

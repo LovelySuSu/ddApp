@@ -10,4 +10,4 @@ export const PAGE_SIZE = 10 // 请求条数
 export const FLAG_STORAGE = {
     flag_popular: 'popular', flag_trending: 'trending'
 } // 数据请求判断是来自popular模块还是trending模块
-export const TimeSpans = [new TimeSpan('今 天', 'since=daily'), new TimeSpan('本 周', 'since=weekly'), new TimeSpan('本 月', 'since=monthly')]
+export const TimeSpans = [new TimeSpan('今 天', 'daily'), new TimeSpan('本 周', 'weekly'), new TimeSpan('本 月', 'monthly')]

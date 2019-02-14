@@ -2,7 +2,9 @@ import React,{ Component } from 'react'
 import {
     Modal,
     TouchableOpacity,
-    StyleSheet
+    StyleSheet,
+    View,
+    Text
 } from 'react-native'
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import { TimeSpans } from "../constant"
@@ -34,7 +36,7 @@ export default class TrendingDialog extends Component {
             >
                 <TouchableOpacity
                     style={S.container}
-                    onPress={() => this.dismiss()}
+                    onPress={() => this.hide()}
                 >
                     <MaterialIcons
                         name={'arrow-drop-up'}
