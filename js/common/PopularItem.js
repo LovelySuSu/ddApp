@@ -7,23 +7,11 @@ import {
     StyleSheet
 } from 'react-native'
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-export default class PopularItem extends Component{
+import BaseItem from "./BaseItem";
+export default class PopularItem extends BaseItem{
     render() {
         const { item,onSelect } = this.props
         if(!item || !item.owner) return null
-        let favoriteButton = (
-            <TouchableOpacity
-                style={{ padding: 6 }} // 增大点击区域
-                onPress={() => console.log('去收藏')}
-                underlayColor={'transparent'}
-            >
-                <FontAwesome
-                    name={'star-o'}
-                    size={26}
-                    style={{ color: 'red' }}
-                />
-            </TouchableOpacity>
-        )
         return (
             <TouchableOpacity
                 onPress={ ()=> onSelect()}
@@ -44,7 +32,7 @@ export default class PopularItem extends Component{
                             <Text>{item.stargazers_count}</Text>
                         </View>
                         {
-                            favoriteButton
+                            this.getFavoriteIcon()
                         }
                     </View>
                 </View>
