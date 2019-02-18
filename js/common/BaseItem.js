@@ -27,6 +27,11 @@ export default class BaseItem extends Component {
         }
         return null
     }
+    onItemClick() {
+        this.props.onSelect(isFavorite => {
+            this.setFavoriteState(isFavorite)
+        })
+    }
     setFavoriteState(isFavorite) {
         this.props.item.isFavorite = isFavorite
         this.setState({

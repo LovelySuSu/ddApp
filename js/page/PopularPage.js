@@ -94,10 +94,11 @@ class PopularTab extends Component<Props> {
     renderItem(item) {
         return <PopularItem
                 item={item}
-                onSelect={() => NavigationUtil.goPage('DetailPage',{
+                onSelect={(callback) => NavigationUtil.goPage('DetailPage',{
                     navigation: this.props.navigation,
                     projectMode: item,
-                    flag: FLAG_STORAGE.flag_popular
+                    flag: FLAG_STORAGE.flag_popular,
+                    callback: callback
                 })}
                 onFavorite={(item,isFavorite)=> Utils.onFavorite(favoriteDao,item,isFavorite,FLAG_STORAGE.flag_popular)}
             />

@@ -38,7 +38,8 @@ export default class DetailPage extends Component<Props> {
         this.backPress.componentWillUnmount()
     }
     onFavoriteButtonClick(isFavorite) {
-        const { projectMode,flag } = this.params
+        const { projectMode,flag,callback } = this.params
+        callback(isFavorite) // 更新Item的收藏状态
         projectMode.isFavorite = isFavorite
         Utils.onFavorite(this.favoriteDao,projectMode,projectMode.isFavorite,flag)
     }

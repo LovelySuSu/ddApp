@@ -9,11 +9,11 @@ import {
 import BaseItem from "./BaseItem";
 export default class PopularItem extends BaseItem{
     render() {
-        const { item,onSelect } = this.props
+        const { item } = this.props
         if(!item || !item.owner) return null
         return (
             <TouchableOpacity
-                onPress={ ()=> onSelect()}
+                onPress={()=>this.onItemClick()}
             >
                 <View style={S.container}>
                     <Text style={S.title}>{item.full_name}</Text>
