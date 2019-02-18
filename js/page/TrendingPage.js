@@ -14,12 +14,15 @@ import { createMaterialTopTabNavigator } from 'react-navigation'
 import actions from "../action";
 import TrendingItem from "../common/TrendingItem";
 import Toast from 'react-native-easy-toast'
-import { PAGE_SIZE, THEME_COLOR, TimeSpans, TRENDING_URL } from '../constant'
+import { FLAG_STORAGE, PAGE_SIZE, THEME_COLOR, TimeSpans, TRENDING_URL } from '../constant'
 import NavigationBar from "../common/NavigationBar";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import TrendingDialog from "../common/TrendingDialog";
-import {EVENT_TYPE_TIME_SPAN_CHANGE} from "../emit";
-import NavigationUtil from "../navigator/NavigationUtil";
+import { EVENT_TYPE_TIME_SPAN_CHANGE } from "../emit";
+import NavigationUtil from "../navigator/NavigationUtil"
+import FavoriteDao from "../expand/dao/FavoriteDao";
+import Utils from "../util/Utils";
+const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending)
 export default class TrendingPage extends Component<Props> {
     constructor(props){
         super(props)
@@ -140,11 +143,11 @@ class TrendingTab extends Component<Props> {
         const url = this.genFetchUrl(this.storeName)
         let store = this.getStore()
         if(isLoadMore) {
-            onLoadMoreTrending(this.storeName,++store.pageIndex,PAGE_SIZE,store.items,callBack => {
+            onLoadMoreTrending(this.storeName,++store.pageIndex,PAGE_SIZE,store.items,favoriteDao,callBack => {
                 this.refs.toast.show('已无更多数据')
             })
         } else {
-            onTrendingRefresh(this.storeName,url,PAGE_SIZE)
+            onTrendingRefresh(this.storeName,url,PAGE_SIZE,favoriteDao)
         }
     }
     genFetchUrl(key) {
@@ -158,6 +161,7 @@ class TrendingTab extends Component<Props> {
                 navigation: this.props.navigation,
                 projectMode: item
             })}
+            onFavorite={(item,isFavorite)=> Utils.onFavorite(favoriteDao,item,isFavorite,FLAG_STORAGE.flag_trending)}
         />
     }
     getStore() {
@@ -225,8 +229,8 @@ const mapStateToProps = state => ({
     trending: state.trending
 })
 const mapDispatchToProps = dispatch => ({
-    onTrendingRefresh: (storeName,url,pageSize) => dispatch(actions.onTrendingRefresh(storeName,url,pageSize)),
-    onLoadMoreTrending: (storeName,pageIndex,pageSize,dataArray,callBack) => dispatch(actions.onLoadMoreTrending(storeName,pageIndex,pageSize,dataArray,callBack))
+    onTrendingRefresh: (storeName,url,pageSize,favoriteDao) => dispatch(actions.onTrendingRefresh(storeName,url,pageSize,favoriteDao)),
+    onLoadMoreTrending: (storeName,pageIndex,pageSize,dataArray,favoriteDao,callBack) => dispatch(actions.onLoadMoreTrending(storeName,pageIndex,pageSize,dataArray,favoriteDao,callBack))
 })
 const TrendingTabPage = connect(mapStateToProps,mapDispatchToProps)(TrendingTab)
 const styles = StyleSheet.create({

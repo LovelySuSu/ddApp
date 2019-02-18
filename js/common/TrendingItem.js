@@ -6,7 +6,6 @@ import {
     Image,
     StyleSheet
 } from 'react-native'
-import FontAwesome from "react-native-vector-icons/FontAwesome";
 import HTMLView from 'react-native-htmlview'
 import BaseItem from "./BaseItem";
 export default class TrendingItem extends BaseItem{
