@@ -62,3 +62,20 @@ export function onLoadMoreTrending(storeName,pageIndex,pageSize,dataArray = [],f
         },500)
     }
 }
+
+/**
+ * 收藏页面数据更新刷新trending页面
+ */
+export function onFlushRefreshTrending(storeName,pageIndex,pageSize,dataArray = [],favoriteDao) {
+    return dispatch => {
+        let max = pageSize * pageIndex > dataArray.length ? dataArray.length : pageSize * pageIndex
+        dealItems(dataArray.slice(0,max),favoriteDao,projectModes => {
+            dispatch({
+                type: Types.FLUSH_REFRESH_TRENDING,
+                storeName: storeName,
+                pageIndex: pageIndex,
+                projectModes: projectModes
+            })
+        })
+    }
+}

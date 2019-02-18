@@ -18,10 +18,15 @@ import { FLAG_STORAGE, PAGE_SIZE, THEME_COLOR, TimeSpans, TRENDING_URL } from '.
 import NavigationBar from "../common/NavigationBar";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import TrendingDialog from "../common/TrendingDialog";
-import { EVENT_TYPE_TIME_SPAN_CHANGE } from "../emit";
+import {
+    BOTTOM_TAB_SELECT,
+    EVENT_TYPE_TIME_SPAN_CHANGE,
+    FAVORITE_CHANGED_TRENDING
+} from "../emit";
 import NavigationUtil from "../navigator/NavigationUtil"
 import FavoriteDao from "../expand/dao/FavoriteDao";
 import Utils from "../util/Utils";
+import EventBus from "react-native-event-bus";
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending)
 export default class TrendingPage extends Component<Props> {
     constructor(props){
@@ -132,20 +137,32 @@ class TrendingTab extends Component<Props> {
             this.onLoadData(false)
         })
         this.onLoadData(false)
+        EventBus.getInstance().addListener(FAVORITE_CHANGED_TRENDING, this.favoriteChangeListener = () => {
+            this.isFavoriteChanged = true
+        });
+        EventBus.getInstance().addListener(BOTTOM_TAB_SELECT, this.bottomTabSelectListener = (data) => {
+            if (data.to === 1 && this.isFavoriteChanged) {
+                this.onLoadData(false, true)
+            }
+        })
     }
     componentWillUnmount() {
         if(this.timeSpanChangeListener) {
             this.timeSpanChangeListener.remove()
         }
+        EventBus.getInstance().removeListener(this.favoriteChangeListener)
+        EventBus.getInstance().removeListener(this.bottomTabSelectListener)
     }
-    onLoadData(isLoadMore) {
-        const { onTrendingRefresh,onLoadMoreTrending } = this.props
+    onLoadData(isLoadMore,isFlushRefresh = false) {
+        const { onTrendingRefresh,onLoadMoreTrending,onFlushRefreshTrending } = this.props
         const url = this.genFetchUrl(this.storeName)
         let store = this.getStore()
         if(isLoadMore) {
             onLoadMoreTrending(this.storeName,++store.pageIndex,PAGE_SIZE,store.items,favoriteDao,callBack => {
                 this.refs.toast.show('已无更多数据')
             })
+        } else if(isFlushRefresh) {
+            onFlushRefreshTrending(this.storeName,++store.pageIndex,PAGE_SIZE,store.items,favoriteDao)
         } else {
             onTrendingRefresh(this.storeName,url,PAGE_SIZE,favoriteDao)
         }
@@ -232,7 +249,8 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => ({
     onTrendingRefresh: (storeName,url,pageSize,favoriteDao) => dispatch(actions.onTrendingRefresh(storeName,url,pageSize,favoriteDao)),
-    onLoadMoreTrending: (storeName,pageIndex,pageSize,dataArray,favoriteDao,callBack) => dispatch(actions.onLoadMoreTrending(storeName,pageIndex,pageSize,dataArray,favoriteDao,callBack))
+    onLoadMoreTrending: (storeName,pageIndex,pageSize,dataArray,favoriteDao,callBack) => dispatch(actions.onLoadMoreTrending(storeName,pageIndex,pageSize,dataArray,favoriteDao,callBack)),
+    onFlushRefreshTrending: (storeName,pageIndex,pageSize,dataArray,favoriteDao) => dispatch(actions.onFlushRefreshTrending(storeName,pageIndex,pageSize,dataArray,favoriteDao))
 })
 const TrendingTabPage = connect(mapStateToProps,mapDispatchToProps)(TrendingTab)
 const styles = StyleSheet.create({
