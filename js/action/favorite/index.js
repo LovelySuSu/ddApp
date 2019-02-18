@@ -4,12 +4,14 @@ import FavoriteDao from "../../expand/dao/FavoriteDao";
 /**
  * 获取收藏模块数据的异步action
  */
-export function onLoadFavoriteData(flag) {
+export function onLoadFavoriteData(flag,isShowLoading) {
     return dispatch => {
-        dispatch({
-            type: Types.FAVORITE_LOAD_DATA,
-            storeName: flag
-        })
+        if(isShowLoading){
+            dispatch({
+                type: Types.FAVORITE_LOAD_DATA,
+                storeName: flag
+            })
+        }
         new FavoriteDao(flag).getAllItems()
             .then(items => {
                 items = items.map(item => {

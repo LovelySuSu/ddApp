@@ -9,6 +9,8 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MyPage from "../page/MyPage";
 import { connect } from 'react-redux'
 import { BottomTabBar } from 'react-navigation-tabs'
+import EventBus from 'react-native-event-bus'
+import { BOTTOM_TAB_SELECT } from "../emit";
 const TABS = { // 在这里配置页面的路由
     PopularPage: {
         screen: PopularPage,
@@ -84,7 +86,14 @@ class DynamicNavigator extends Component<Props>{
 
     render() {
         const Tab = this.tabNavigator()
-        return <Tab/>
+        return <Tab
+            onNavigationStateChange={(preState,nextState,action) => {
+                EventBus.getInstance().fireEvent(BOTTOM_TAB_SELECT,{
+                    from: preState.index,
+                    to: nextState.index
+                })
+            }}
+        />
     }
 }
 class TabBarComponent extends Component{

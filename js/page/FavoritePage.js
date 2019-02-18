@@ -18,6 +18,8 @@ import NavigationUtil from "../navigator/NavigationUtil"
 import Utils from "../util/Utils";
 import TrendingItem from "../common/TrendingItem";
 import FavoriteDao from "../expand/dao/FavoriteDao";
+import EventBus from "react-native-event-bus";
+import {BOTTOM_TAB_SELECT, FAVORITE_CHANGED_POPULAR, FAVORITE_CHANGED_TRENDING} from "../emit";
 
 export default class FavoritePage extends Component<Props> {
     constructor(props){
@@ -75,11 +77,19 @@ class FavoriteTab extends Component<Props> {
         this.favoriteDao = new FavoriteDao(tabLabel)
     }
     componentDidMount() {
-        this.onLoadData()
+        this.onLoadData(true)
+        EventBus.getInstance().addListener(BOTTOM_TAB_SELECT,this.listener = data => {
+            if (data.to === 2) {
+                this.onLoadData(false)
+            }
+        })
     }
-    onLoadData() {
+    componentWillUnmount() {
+        EventBus.getInstance().removeListener(this.listener)
+    }
+    onLoadData(isShowLoading) {
         const { onLoadFavoriteData } = this.props
-        onLoadFavoriteData(this.storeName)
+        onLoadFavoriteData(this.storeName,isShowLoading)
     }
     getStore() {
         const { favorite } = this.props
@@ -92,6 +102,15 @@ class FavoriteTab extends Component<Props> {
         }
         return store
     }
+    onFavorite(item,isFavorite) {
+        Utils.onFavorite(this.favoriteDao,item,isFavorite,this.storeName)
+        if(this.storeName === FLAG_STORAGE.flag_popular) {
+            EventBus.getInstance().fireEvent(FAVORITE_CHANGED_POPULAR)
+        } else {
+            EventBus.getInstance().fireEvent(FAVORITE_CHANGED_TRENDING)
+        }
+
+    }
     renderItem(item) {
         let Item = this.storeName === FLAG_STORAGE.flag_popular ? PopularItem : TrendingItem
         return <Item
@@ -102,7 +121,7 @@ class FavoriteTab extends Component<Props> {
                 flag: this.storeName,
                 callback: callback
             })}
-            onFavorite={(item,isFavorite)=> { Utils.onFavorite(this.favoriteDao,item,isFavorite,this.storeName)} }
+            onFavorite={(item,isFavorite)=> { this.onFavorite(item,isFavorite)} }
         />
     }
     render() {
@@ -134,7 +153,7 @@ const mapStateToProps = state => ({
     favorite: state.favorite
 })
 const mapDispatchToProps = dispatch => ({
-    onLoadFavoriteData: (flag) => dispatch(actions.onLoadFavoriteData(flag)),
+    onLoadFavoriteData: (flag,isShowLoading) => dispatch(actions.onLoadFavoriteData(flag,isShowLoading)),
 })
 const FavoriteTabPage = connect(mapStateToProps,mapDispatchToProps)(FavoriteTab)
 const styles = StyleSheet.create({
