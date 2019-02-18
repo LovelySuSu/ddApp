@@ -4,7 +4,8 @@ import {
     Text,
     View,
     Button,
-    TouchableOpacity
+    TouchableOpacity,
+    ScrollView
 } from 'react-native';
 import actions from "../action";
 import { connect } from "react-redux";
@@ -12,62 +13,50 @@ import NavigationBar from "../common/NavigationBar";
 import { THEME_COLOR } from "../constant";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import {MORE_MENU} from "../common/MoreMenu";
+import GlobalStyles from "../res/GlobalStyles";
 
 
 class MyPage extends Component<Props> {
-    getRightButton() {
-        return (
-            <TouchableOpacity
-                onPress={() => {}}
-            >
-                <View
-                    style={{ padding: 5,marginRight: 8 }}
-                >
-                    <AntDesign
-                        name={'search1'}
-                        size={24}
-                        color={'#fff'}
-                    />
-                </View>
-            </TouchableOpacity>
-        )
-    }
-    getLeftButton(callBack) {
-        return (
-            <TouchableOpacity
-                onPress={callBack}
-            >
-                <View
-                    style={{ padding: 5,paddingLeft: 22 }}
-                >
-                    <Ionicons
-                        name={'ios-arrow-back'}
-                        size={26}
-                        color={'#fff'}
-                    />
-                </View>
-            </TouchableOpacity>
-        )
-    }
     render() {
         let statusBar = {
             backgroundColor: THEME_COLOR,
             barStyle: 'light-content'
         }
         return (
-            <View style={styles.container}>
+            <View style={GlobalStyles.root_container}>
                 <NavigationBar
                     title={'我的'}
                     statusBar={statusBar}
                     style={{ backgroundColor: THEME_COLOR }}
-                    leftButton={this.getLeftButton(()=>{})}
-                    rightButton={this.getRightButton()}
                 />
-                <Text style={styles.welcome}>My Page</Text>
-                <Button
-                    title={'改变主题颜色'}
-                    onPress={() => this.props.onThemeChange('orange')}
-                />
+                <ScrollView>
+                    <TouchableOpacity
+                        style={styles.item}
+                        onPress={() => this.onClick(MORE_MENU.About)}
+                    >
+                        <View style={styles.about_left}>
+                            <Ionicons
+                                name={MORE_MENU.About.icon}
+                                size={40}
+                                style={{
+                                    marginRight: 10,
+                                    color: THEME_COLOR,
+                                }}
+                            />
+                            <Text>丁酥酥的小应用</Text>
+                        </View>
+                        <Ionicons
+                            name={'ios-arrow-forward'}
+                            size={16}
+                            style={{
+                                marginRight: 10,
+                                alignSelf: 'center',
+                                color: THEME_COLOR,
+                            }}/>
+                    </TouchableOpacity>
+                    <View style={GlobalStyles.line}/>
+                </ScrollView>
             </View>
         );
     }
@@ -77,11 +66,18 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    welcome: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-    }
+    about_left: {
+        alignItems: 'center',
+        flexDirection: 'row'
+    },
+    item: {
+        backgroundColor: 'white',
+        padding: 10,
+        height: 90,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexDirection: 'row'
+    },
 });
 const mapStateToProps = state => ({})
 
