@@ -68,6 +68,14 @@ export default function onAction(state=defaultState,action) {
                 }
             }
         }
+        case TYPES.FLUSH_REFRESH_POPULAR: {
+            return {
+                ...state,
+                [action.storeName] : {
+                    ...state[action.storeName]
+                }
+            }
+        }
         default:
             return state
     }
