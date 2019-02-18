@@ -4,32 +4,38 @@ import {
 } from 'react-native'
 import FontAwesome from "react-native-vector-icons/FontAwesome"
 import { PropTypes } from 'prop-types'
-import {THEME_COLOR} from "../constant";
+import {THEME_COLOR} from "../constant"
 
 export default class BaseItem extends Component {
     static propTypes = {
-        projectMode: PropTypes.object,
+        item: PropTypes.object,
         onSelect: PropTypes.func,
         onFavorite: PropTypes.func
     }
     constructor(props) {
         super(props)
         this.state = {
-            isFavorite: false
+            isFavorite: this.props.item.isFavorite
         }
     }
     static getDerivedStateFromProps(nextProps,preState) {
-        // let isFavorite = nextProps.projectMode.isFavorite
-        // if (preState.isFavorite !== isFavorite) {
-        //     return {
-        //         isFavorite: isFavorite
-        //     }
-        // }
+        let isFavorite = nextProps.item.isFavorite
+        if (preState.isFavorite !== isFavorite) {
+            return {
+                isFavorite: isFavorite
+            }
+        }
         return null
     }
+    setFavoriteState(isFavorite) {
+        this.props.item.isFavorite = isFavorite
+        this.setState({
+            isFavorite: isFavorite,
+        })
+    }
     onPressFavorite() {
-        // this.setFavoriteState(!this.state.isFavorite)
-        // this.props.onFavorite(!this.state.isFavorite,this.props.projectMode)
+        this.setFavoriteState(!this.state.isFavorite)
+        this.props.onFavorite(this.props.item,!this.state.isFavorite)
     }
     getFavoriteIcon() {
         return (<TouchableOpacity

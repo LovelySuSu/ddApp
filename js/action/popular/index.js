@@ -1,11 +1,11 @@
 import Types from "../types"
 import DataStore from "../../expand/dao/DataStore"
 import { FLAG_STORAGE } from "../../constant";
-import { handleData } from "../ActionUtil";
+import {dealItems, handleData} from "../ActionUtil";
 /**
  * 获取最热数据的异步action
  */
-export function onLoadPopularData(storeName, url, pageSize) {
+export function onLoadPopularData(storeName, url, pageSize, favoriteDao) {
     return dispatch => {
         dispatch({
             type: Types.POPULAR_REFRESH,
@@ -13,7 +13,7 @@ export function onLoadPopularData(storeName, url, pageSize) {
         })
         let dataStore = new DataStore()
         dataStore.fetchData(url,FLAG_STORAGE.flag_popular)
-            .then(data => handleData(Types.POPULAR_LOAD_SUCCESS,dispatch,storeName,data,pageSize))
+            .then(data => handleData(Types.POPULAR_LOAD_SUCCESS,dispatch,storeName,data,pageSize,favoriteDao))
             .catch(error => {
                 error && console.log(error)
                 dispatch({
@@ -33,7 +33,7 @@ export function onLoadPopularData(storeName, url, pageSize) {
  * @param callBack 回调函数，可以通过回调函数来向调用页面通信：比如异常信息的展示，没有更多等待
  * @returns {function(*)}
  */
-export function onLoadMorePopular(storeName,pageIndex,pageSize,dataArray = [],callBack) {
+export function onLoadMorePopular(storeName,pageIndex,pageSize,dataArray = [],favoriteDao,callBack) {
     return dispatch => {
         setTimeout(()=> { // 模拟网络请求
             if ((pageIndex-1) * pageSize >= dataArray.length) { // 已加载完全部数据
@@ -49,13 +49,16 @@ export function onLoadMorePopular(storeName,pageIndex,pageSize,dataArray = [],ca
                 })
             } else {
                 // 本次可载入的最大数量
-                let max = pageSize * pageIndex > dataArray.length ? dataArray.length : pageSize * pageIndex;
-                dispatch({
-                    type: Types.POPULAR_LOAD_MORE_SUCCESS,
-                    storeName: storeName,
-                    pageIndex: pageIndex,
-                    projectModes: dataArray.slice(0,max)
+                let max = pageSize * pageIndex > dataArray.length ? dataArray.length : pageSize * pageIndex
+                dealItems(dataArray.slice(0,max),favoriteDao,projectModes => {
+                    dispatch({
+                        type: Types.POPULAR_LOAD_MORE_SUCCESS,
+                        storeName: storeName,
+                        pageIndex: pageIndex,
+                        projectModes: projectModes
+                    })
                 })
+
             }
         },500)
     }

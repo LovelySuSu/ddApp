@@ -6,7 +6,6 @@ import {
     Image,
     StyleSheet
 } from 'react-native'
-import FontAwesome from "react-native-vector-icons/FontAwesome";
 import BaseItem from "./BaseItem";
 export default class PopularItem extends BaseItem{
     render() {

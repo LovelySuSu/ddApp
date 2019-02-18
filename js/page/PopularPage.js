@@ -12,9 +12,12 @@ import { createMaterialTopTabNavigator } from 'react-navigation'
 import actions from "../action";
 import PopularItem from "../common/PopularItem";
 import Toast from 'react-native-easy-toast'
-import { PAGE_SIZE, THEME_COLOR,POPULAR_URL} from '../constant'
+import { PAGE_SIZE, THEME_COLOR, POPULAR_URL, FLAG_STORAGE } from '../constant'
 import NavigationBar from "../common/NavigationBar";
 import NavigationUtil from "../navigator/NavigationUtil";
+import FavoriteDao from "../expand/dao/FavoriteDao";
+import Utils from "../util/Utils";
+const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular)
 export default class PopularPage extends Component<Props> {
     constructor(props){
         super(props)
@@ -78,11 +81,11 @@ class PopularTab extends Component<Props> {
         const url = this.genFetchUrl(this.storeName)
         let store = this.getStore()
         if(isLoadMore) {
-            onLoadMorePopular(this.storeName,++store.pageIndex,PAGE_SIZE,store.items,callBack => {
+            onLoadMorePopular(this.storeName,++store.pageIndex,PAGE_SIZE,store.items,favoriteDao,callBack => {
                 this.refs.toast.show('已无更多数据')
             })
         } else {
-            onLoadPopularData(this.storeName,url,PAGE_SIZE)
+            onLoadPopularData(this.storeName,url,PAGE_SIZE,favoriteDao)
         }
     }
     genFetchUrl(key) {
@@ -95,6 +98,7 @@ class PopularTab extends Component<Props> {
                     navigation: this.props.navigation,
                     projectMode: item
                 })}
+                onFavorite={(item,isFavorite)=> Utils.onFavorite(favoriteDao,item,isFavorite,FLAG_STORAGE.flag_popular)}
             />
     }
     getStore() {
@@ -162,8 +166,8 @@ const mapStateToProps = state => ({
     popular: state.popular
 })
 const mapDispatchToProps = dispatch => ({
-    onLoadPopularData: (storeName,url,pageSize) => dispatch(actions.onLoadPopularData(storeName,url,pageSize)),
-    onLoadMorePopular: (storeName,pageIndex,pageSize,dataArray,callBack) => dispatch(actions.onLoadMorePopular(storeName,pageIndex,pageSize,dataArray,callBack))
+    onLoadPopularData: (storeName,url,pageSize,favoriteDao) => dispatch(actions.onLoadPopularData(storeName,url,pageSize,favoriteDao)),
+    onLoadMorePopular: (storeName,pageIndex,pageSize,dataArray,favoriteDao,callBack) => dispatch(actions.onLoadMorePopular(storeName,pageIndex,pageSize,dataArray,favoriteDao,callBack))
 })
 const PopularTabPage = connect(mapStateToProps,mapDispatchToProps)(PopularTab)
 const styles = StyleSheet.create({
