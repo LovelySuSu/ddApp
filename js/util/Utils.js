@@ -1,4 +1,4 @@
-import {FLAG_STORAGE} from "../constant";
+import { FLAG_STORAGE } from "../constant";
 
 export default class Utils {
     /**
