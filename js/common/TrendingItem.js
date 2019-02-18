@@ -10,12 +10,12 @@ import HTMLView from 'react-native-htmlview'
 import BaseItem from "./BaseItem";
 export default class TrendingItem extends BaseItem{
     render() {
-        const { item,onSelect } = this.props
+        const { item } = this.props
         if(!item) return null
         let description = '<p>' + item.description + '</p>'
         return (
             <TouchableOpacity
-                onPress={ ()=> onSelect()}
+                onPress={ ()=> this.onItemClick()}
             >
                 <View style={S.container}>
                     <Text style={S.title}>{item.full_name}</Text>
