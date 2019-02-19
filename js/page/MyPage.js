@@ -15,11 +15,22 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import {MORE_MENU} from "../common/MoreMenu";
 import GlobalStyles from "../res/GlobalStyles";
 import ViewUtil from "../util/ViewUtil";
+import NavigationUtil from "../navigator/NavigationUtil";
 
 
 class MyPage extends Component<Props> {
     onClick(menu) {
-
+        let RouteName, params = {}
+        switch (menu) {
+            case MORE_MENU.Tutorial:
+                RouteName = 'WebViewPage'
+                params.title = '教程'
+                params.url = 'https://coding.m.imooc.com/classindex.html?cid=89'
+                break
+        }
+        if(RouteName){
+            NavigationUtil.goPage(RouteName,params)
+        }
     }
     getItem(menu) {
         return ViewUtil.getMenuItem(() => {

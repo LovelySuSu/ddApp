@@ -11,6 +11,7 @@ import { createReactNavigationReduxMiddleware, reduxifyNavigator } from "react-n
 import FetchDemo from "../page/FetchDemo";
 import AsyncStorageDemo from "../page/AsyncStorageDemo";
 import DataStoreDemo from "../page/DataStoreDemo";
+import WebViewPage from "../page/WebViewPage";
 
 export const rootCom = 'Init'//设置根路由
 
@@ -33,7 +34,7 @@ const mainNavigator = createStackNavigator({
     DetailPage: {
         screen: DetailPage,
         navigationOptions: {
-            header: null // 禁用navigation bar,全屏显示t
+            header: null // 禁用navigation bar,全屏显示
         }
     },
     FetchDemo: {
@@ -52,6 +53,12 @@ const mainNavigator = createStackNavigator({
         screen: DataStoreDemo,
         navigationOptions: {
             title: 'DataStore Demo'
+        }
+    },
+    WebViewPage: {
+        screen: WebViewPage,
+        navigationOptions: {
+            header: null // 禁用navigation bar,全屏显示
         }
     }
 })
