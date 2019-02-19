@@ -71,7 +71,11 @@ export default class AboutCommon {
         config.renderForeground = () => (
             <View key="parallax-header" style={styles.parallaxHeader}>
                 <Image style={styles.avatar}
-                       source={avatar}/>
+                       source={{
+                           uri: params.avatar,
+                           width: AVATAR_SIZE,
+                           height: AVATAR_SIZE
+                       }}/>
                 <Text style={styles.sectionSpeakerText}>
                     {params.name}
                 </Text>

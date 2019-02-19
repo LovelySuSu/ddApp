@@ -13,6 +13,7 @@ import AsyncStorageDemo from "../page/AsyncStorageDemo";
 import DataStoreDemo from "../page/DataStoreDemo";
 import WebViewPage from "../page/WebViewPage";
 import AboutPage from "../page/about/AboutPage";
+import AboutMePage from "../page/about/AboutMePage";
 
 export const rootCom = 'Init'//设置根路由
 
@@ -64,6 +65,12 @@ const mainNavigator = createStackNavigator({
     },
     AboutPage: {
         screen: AboutPage,
+        navigationOptions: {
+            header: null
+        }
+    },
+    AboutMePage: {
+        screen: AboutMePage,
         navigationOptions: {
             header: null
         }
