@@ -1,7 +1,8 @@
 import React, {Component} from 'react'
 import {
     View,
-    Linking
+    Linking,
+    Clipboard
 } from 'react-native'
 import ViewUtil from "../../util/ViewUtil"
 import NavigationUtil from "../../navigator/NavigationUtil"
@@ -9,8 +10,8 @@ import AboutCommon from "./AboutCommon"
 import { FLAG_ABOUT, THEME_COLOR } from "../../constant"
 import GlobalStyles from "../../res/GlobalStyles"
 import config from '../../res/data/config'
-import { MORE_MENU } from "../../common/MoreMenu"
 import Ionicons from "react-native-vector-icons/Ionicons";
+import Toast from "react-native-easy-toast";
 
 
 export default class AboutMePage extends Component<Props> {
@@ -34,28 +35,30 @@ export default class AboutMePage extends Component<Props> {
             showContact: false
         }
     }
-    onClick(menu) {
-        let RouteName, params = {}
-        switch (menu) {
-            case MORE_MENU.Tutorial:
-                RouteName = 'WebViewPage'
-                params.title = '教程'
-                params.url = 'https://coding.m.imooc.com/classindex.html?cid=89'
-                break
-            case MORE_MENU.Feedback:
-                let url = '1060340716@qq.com'
-                Linking.canOpenURL(url)
-                    .then(support => {
-                        if(!support) {
-                            console.log('不支持发送邮件')
-                        } else {
-                            Linking.openURL(url)
-                        }
-                    }).catch(error => console.log(error))
-                break
+    onClick(tab) {
+        if(!tab) return
+        if(tab.url) {
+            NavigationUtil.goPage('WebViewPage',{
+                title: tab.title,
+                url: tab.url
+            })
+            return
         }
-        if(RouteName){
-            NavigationUtil.goPage(RouteName,params)
+        if(tab.account && tab.account.includes('@')) {
+            let url = tab.account
+            Linking.canOpenURL(url)
+                .then(support => {
+                    if(!support) {
+                        console.log('不支持发送邮件')
+                    } else {
+                        Linking.openURL(url)
+                    }
+                }).catch(error => console.log(error))
+            return
+        }
+        if(tab.account) {
+            Clipboard.setString(tab.account)
+            this.refs.toast.show(tab.title + tab.account + '已复制到剪切板。')
         }
     }
     getItem(data, isShow, key) {
@@ -72,7 +75,7 @@ export default class AboutMePage extends Component<Props> {
      */
     renderItems(dic, isShowAccount) {
         if (!dic) return null
-        let views = [];
+        let views = []
         for (let i in dic) {
             let title = isShowAccount ? dic[i].title + ':' + dic[i].account : dic[i].title;
             views.push(
@@ -82,7 +85,7 @@ export default class AboutMePage extends Component<Props> {
                 </View>
             )
         }
-        return views;
+        return views
     }
     render() {
         const content = <View>
@@ -103,7 +106,14 @@ export default class AboutMePage extends Component<Props> {
             {this.state.showContact ? this.renderItems(this.state.data.aboutMe.Contact.items, true) : null}
         </View>
         return (
-            this.aboutCommon.render(content,this.state.data.author)
+            <View style={{flex: 1}}>
+                {this.aboutCommon.render(content,this.state.data.author)}
+                <Toast
+                    ref={'toast'}
+                    position={'center'}
+                />
+            </View>
+
         )
     }
 }

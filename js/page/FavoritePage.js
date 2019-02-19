@@ -11,7 +11,6 @@ import { connect } from 'react-redux'
 import { createMaterialTopTabNavigator } from 'react-navigation'
 import actions from "../action";
 import PopularItem from "../common/PopularItem";
-import Toast from 'react-native-easy-toast'
 import { THEME_COLOR, FLAG_STORAGE } from '../constant'
 import NavigationBar from "../common/NavigationBar"
 import NavigationUtil from "../navigator/NavigationUtil"
@@ -141,10 +140,6 @@ class FavoriteTab extends Component<Props> {
                         onRefresh={() => this.onLoadData(false)}
                     />
                 }
-            />
-            <Toast
-                ref={'toast'}
-                position={'center'}
             />
         </View>)
     }
