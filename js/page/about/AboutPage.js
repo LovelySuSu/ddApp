@@ -1,14 +1,15 @@
 import React, {Component} from 'react'
 import {
-    View
+    View,
+    Linking
 } from 'react-native'
 import ViewUtil from "../../util/ViewUtil"
 import NavigationUtil from "../../navigator/NavigationUtil"
 import AboutCommon from "./AboutCommon"
-import {FLAG_ABOUT, THEME_COLOR} from "../../constant"
+import { FLAG_ABOUT, THEME_COLOR } from "../../constant"
 import GlobalStyles from "../../res/GlobalStyles"
 import config from '../../res/data/config'
-import {MORE_MENU} from "../../common/MoreMenu"
+import { MORE_MENU } from "../../common/MoreMenu"
 
 
 export default class AboutPage extends Component<Props> {
@@ -35,6 +36,17 @@ export default class AboutPage extends Component<Props> {
                 RouteName = 'WebViewPage'
                 params.title = '教程'
                 params.url = 'https://coding.m.imooc.com/classindex.html?cid=89'
+                break
+            case MORE_MENU.Feedback:
+                let url = '1060340716@qq.com'
+                Linking.canOpenURL(url)
+                    .then(support => {
+                        if(!support) {
+                            console.log('不支持发送邮件')
+                        } else {
+                            Linking.openURL(url)
+                        }
+                    }).catch(error => console.log(error))
                 break
         }
         if(RouteName){
