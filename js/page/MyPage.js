@@ -11,13 +11,21 @@ import actions from "../action";
 import { connect } from "react-redux";
 import NavigationBar from "../common/NavigationBar";
 import { THEME_COLOR } from "../constant";
-import AntDesign from "react-native-vector-icons/AntDesign";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import {MORE_MENU} from "../common/MoreMenu";
 import GlobalStyles from "../res/GlobalStyles";
+import ViewUtil from "../util/ViewUtil";
 
 
 class MyPage extends Component<Props> {
+    onClick(menu) {
+
+    }
+    getItem(menu) {
+        return ViewUtil.getMenuItem(() => {
+            this.onClick(menu)
+        },menu,THEME_COLOR)
+    }
     render() {
         let statusBar = {
             backgroundColor: THEME_COLOR,
@@ -56,6 +64,41 @@ class MyPage extends Component<Props> {
                             }}/>
                     </TouchableOpacity>
                     <View style={GlobalStyles.line}/>
+                    {
+                        this.getItem(MORE_MENU.Tutorial)
+                    }
+                    {/*趋势管理*/}
+                    <Text style={styles.groupTitle}>趋势管理</Text>
+                    {/*自定义语言*/}
+                    {this.getItem(MORE_MENU.Custom_Language)}
+                    {/*语言排序*/}
+                    <View style={GlobalStyles.line}/>
+                    {this.getItem(MORE_MENU.Sort_Language)}
+
+                    {/*最热管理*/}
+                    <Text style={styles.groupTitle}>最热管理</Text>
+                    {/*自定义标签*/}
+                    {this.getItem(MORE_MENU.Custom_Key)}
+                    {/*标签排序*/}
+                    <View style={GlobalStyles.line}/>
+                    {this.getItem(MORE_MENU.Sort_Key)}
+                    {/*标签移除*/}
+                    <View style={GlobalStyles.line}/>
+                    {this.getItem(MORE_MENU.Remove_Key)}
+
+                    {/*设置*/}
+                    <Text style={styles.groupTitle}>设置</Text>
+                    {/*自定义主题*/}
+                    {this.getItem(MORE_MENU.Custom_Theme)}
+                    {/*关于作者*/}
+                    <View style={GlobalStyles.line}/>
+                    {this.getItem(MORE_MENU.About_Author)}
+                    <View style={GlobalStyles.line}/>
+                    {/*反馈*/}
+                    {this.getItem(MORE_MENU.Feedback)}
+                    <View style={GlobalStyles.line}/>
+                    {this.getItem(MORE_MENU.CodePush)}
+
                 </ScrollView>
             </View>
         );
@@ -78,6 +121,13 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         flexDirection: 'row'
     },
+    groupTitle: {
+        marginLeft: 10,
+        marginTop: 10,
+        marginBottom: 5,
+        fontSize: 12,
+        color: 'gray'
+    }
 });
 const mapStateToProps = state => ({})
 
