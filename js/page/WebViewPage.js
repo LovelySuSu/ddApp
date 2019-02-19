@@ -1,14 +1,14 @@
-import React, {Component} from 'react';
+import React, {Component} from 'react'
 import {
     StyleSheet,
     View,
     WebView
 } from 'react-native';
-import { THEME_COLOR } from "../constant";
-import NavigationBar from "../common/NavigationBar";
-import ViewUtil from "../util/ViewUtil";
-import NavigationUtil from "../navigator/NavigationUtil";
-import BackPressHandler from "../common/BackPressHandler";
+import { THEME_COLOR } from "../constant"
+import NavigationBar from "../common/NavigationBar"
+import ViewUtil from "../util/ViewUtil"
+import NavigationUtil from "../navigator/NavigationUtil"
+import BackPressHandler from "../common/BackPressHandler"
 
 export default class WebViewPage extends Component<Props> {
     constructor(props){

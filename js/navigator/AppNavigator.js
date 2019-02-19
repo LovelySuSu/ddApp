@@ -12,6 +12,7 @@ import FetchDemo from "../page/FetchDemo";
 import AsyncStorageDemo from "../page/AsyncStorageDemo";
 import DataStoreDemo from "../page/DataStoreDemo";
 import WebViewPage from "../page/WebViewPage";
+import AboutPage from "../page/about/AboutPage";
 
 export const rootCom = 'Init'//设置根路由
 
@@ -59,6 +60,12 @@ const mainNavigator = createStackNavigator({
         screen: WebViewPage,
         navigationOptions: {
             header: null // 禁用navigation bar,全屏显示
+        }
+    },
+    AboutPage: {
+        screen: AboutPage,
+        navigationOptions: {
+            header: null
         }
     }
 })
