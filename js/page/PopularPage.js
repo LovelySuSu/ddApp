@@ -18,9 +18,9 @@ import NavigationUtil from "../navigator/NavigationUtil";
 import FavoriteDao from "../expand/dao/FavoriteDao";
 import Utils from "../util/Utils";
 import EventBus from "react-native-event-bus";
-import {BOTTOM_TAB_SELECT, FAVORITE_CHANGED_POPULAR} from "../emit";
+import { BOTTOM_TAB_SELECT, FAVORITE_CHANGED_POPULAR } from "../emit";
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular)
-export default class PopularPage extends Component<Props> {
+class PopularPage extends Component<Props> {
     constructor(props){
         super(props)
         this.tabNames = ['JS','React','IOS','React Native','Vue']
@@ -68,7 +68,13 @@ export default class PopularPage extends Component<Props> {
         );
     }
 }
-
+const mapPooluarStateToProps = state => ({
+    language: state.language
+})
+const mapPopularDispatchToProps = dispatch => ({
+    loadLanguage: (flagKey) => dispatch(actions.loadLanguage(flagKey)),
+})
+export default connect(mapPooluarStateToProps,mapPopularDispatchToProps)(PopularPage)
 class PopularTab extends Component<Props> {
     constructor(props){
         super(props)
