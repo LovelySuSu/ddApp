@@ -17,8 +17,10 @@ export const FLAG_STORAGE = {
     flag_popular: 'popular', flag_trending: 'trending'
 } // 数据请求判断是来自popular模块还是trending模块
 export const FLAG_ABOUT = {
-    flag_about: 'about',
-    flag_about_me: 'about_me'
+    flag_about: 'about', flag_about_me: 'about_me'
+}
+export const FLAG_LANGUAGE = {
+    flag_language: 'language_dao_language', flag_key: 'language_dao_key'
 }
 export const TimeSpans = [new TimeSpan('今 天', 'daily'), new TimeSpan('本 周', 'weekly'), new TimeSpan('本 月', 'monthly')]
 export const AVATAR_SIZE = 90
