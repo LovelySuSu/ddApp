@@ -14,7 +14,7 @@ import { createMaterialTopTabNavigator } from 'react-navigation'
 import actions from "../action";
 import TrendingItem from "../common/TrendingItem";
 import Toast from 'react-native-easy-toast'
-import { FLAG_STORAGE, PAGE_SIZE, THEME_COLOR, TimeSpans, TRENDING_URL } from '../constant'
+import {FLAG_LANGUAGE, FLAG_STORAGE, PAGE_SIZE, THEME_COLOR, TimeSpans, TRENDING_URL} from '../constant'
 import NavigationBar from "../common/NavigationBar";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import TrendingDialog from "../common/TrendingDialog";
@@ -28,10 +28,11 @@ import FavoriteDao from "../expand/dao/FavoriteDao";
 import Utils from "../util/Utils";
 import EventBus from "react-native-event-bus";
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending)
-export default class TrendingPage extends Component<Props> {
+class TrendingPage extends Component<Props> {
     constructor(props){
         super(props)
-        this.tabNames = ['All','Java','Javascript','C#','PHP']
+        const { loadLanguage } = this.props
+        loadLanguage(FLAG_LANGUAGE.flag_language)
         this.dialog = null
         this.state = {
             timeSpan: TimeSpans[0]
@@ -39,11 +40,12 @@ export default class TrendingPage extends Component<Props> {
     }
     genTabs() {
         const tabs = {}
-        this.tabNames.forEach((item,index)=>{
+        const { keys } = this.props
+        keys.filter(item => item.checked).forEach((item,index) => {
             tabs[`tab${index}`] = {
-                screen: props => <TrendingTabPage {...props} tabLabel={item} timeSpan={this.state.timeSpan}/>,
+                screen: props => <TrendingTabPage {...props} tabLabel={item.name} timeSpan={this.state.timeSpan}/>,
                 navigationOptions:{
-                    title: item
+                    title: item.name
                 }
             }
         })
@@ -86,8 +88,9 @@ export default class TrendingPage extends Component<Props> {
         />
     }
     navBar() {
+        const { keys } = this.props
         if(!this.tabBar) {
-            this.tabBar = createMaterialTopTabNavigator(this.genTabs(), {
+            this.tabBar = keys.length ? createMaterialTopTabNavigator(this.genTabs(), {
                 tabBarOptions: {
                     tabStyle: styles.tabStyle,
                     upperCaseLabel: false, // 是否使用标签大写，默认为true
@@ -99,7 +102,7 @@ export default class TrendingPage extends Component<Props> {
                     indicatorStyle: styles.indicatorStyle, // 标签指示器的样式
                     labelStyle: styles.labelStyle
                 }
-            })
+            }) : null
         }
         return this.tabBar
     }
@@ -116,13 +119,20 @@ export default class TrendingPage extends Component<Props> {
                     statusBar={statusBar}
                     style={{ backgroundColor: THEME_COLOR }}
                 />
-                <TabNavigator/>
-                {this.renderDialog()}
+                { TabNavigator && <TabNavigator/> }
+                { this.renderDialog() }
             </View>
 
         );
     }
 }
+const mapTrendingStateToProps = state => ({
+    keys: state.language.languages
+})
+const mapTrendingDispatchToProps = dispatch => ({
+    loadLanguage: (keyFlag) => dispatch(actions.loadLanguage(keyFlag))
+})
+export default connect(mapTrendingStateToProps,mapTrendingDispatchToProps)(TrendingPage)
 
 class TrendingTab extends Component<Props> {
     constructor(props){
