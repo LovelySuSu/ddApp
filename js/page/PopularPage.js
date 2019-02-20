@@ -12,7 +12,7 @@ import { createMaterialTopTabNavigator } from 'react-navigation'
 import actions from "../action";
 import PopularItem from "../common/PopularItem";
 import Toast from 'react-native-easy-toast'
-import { PAGE_SIZE, THEME_COLOR, POPULAR_URL, FLAG_STORAGE } from '../constant'
+import {PAGE_SIZE, THEME_COLOR, POPULAR_URL, FLAG_STORAGE, FLAG_LANGUAGE} from '../constant'
 import NavigationBar from "../common/NavigationBar";
 import NavigationUtil from "../navigator/NavigationUtil";
 import FavoriteDao from "../expand/dao/FavoriteDao";
@@ -23,22 +23,25 @@ const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular)
 class PopularPage extends Component<Props> {
     constructor(props){
         super(props)
-        this.tabNames = ['JS','React','IOS','React Native','Vue']
+        const { loadLanguage } = this.props
+        loadLanguage(FLAG_LANGUAGE.flag_key)
     }
     genTabs() {
         const tabs = {}
-        this.tabNames.forEach((item,index)=>{
+        const { keys } = this.props
+        keys.filter(item => item.checked).forEach((item,index)=>{
             tabs[`tab${index}`] = {
-                screen: props => <PopularTabPage {...props} tabLabel={item}/>,
+                screen: props => <PopularTabPage {...props} tabLabel={item.name}/>,
                 navigationOptions:{
-                    title: item
+                    title: item.name
                 }
             }
         })
         return tabs
     }
     render() {
-        const TabTopNavigator = createMaterialTopTabNavigator(this.genTabs(),{
+        const { keys } = this.props
+        const TabTopNavigator = keys.length ? createMaterialTopTabNavigator(this.genTabs(),{
             tabBarOptions: {
                 tabStyle: styles.tabStyle,
                 upperCaseLabel: false, // 是否使用标签大写，默认为true
@@ -50,7 +53,7 @@ class PopularPage extends Component<Props> {
                 indicatorStyle: styles.indicatorStyle, // 标签指示器的样式
                 labelStyle: styles.labelStyle
             }
-        })
+        }) : null
         let statusBar = {
             backgroundColor: THEME_COLOR,
             barStyle: 'light-content'
@@ -62,19 +65,20 @@ class PopularPage extends Component<Props> {
                     statusBar={statusBar}
                     style={{ backgroundColor: THEME_COLOR }}
                 />
-                <TabTopNavigator/>
+                { TabTopNavigator && <TabTopNavigator/> }
             </View>
 
         );
     }
 }
-const mapPooluarStateToProps = state => ({
-    language: state.language
+const mapPopularStateToProps = state => ({
+    keys: state.language.keys
 })
 const mapPopularDispatchToProps = dispatch => ({
     loadLanguage: (flagKey) => dispatch(actions.loadLanguage(flagKey)),
 })
-export default connect(mapPooluarStateToProps,mapPopularDispatchToProps)(PopularPage)
+export default connect(mapPopularStateToProps,mapPopularDispatchToProps)(PopularPage)
+
 class PopularTab extends Component<Props> {
     constructor(props){
         super(props)
