@@ -27,6 +27,7 @@ import NavigationUtil from "../navigator/NavigationUtil"
 import FavoriteDao from "../expand/dao/FavoriteDao";
 import Utils from "../util/Utils";
 import EventBus from "react-native-event-bus";
+import ArrayUtil from "../util/ArrayUtil";
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending)
 class TrendingPage extends Component<Props> {
     constructor(props){
@@ -37,10 +38,12 @@ class TrendingPage extends Component<Props> {
         this.state = {
             timeSpan: TimeSpans[0]
         }
+        this.preKeys = []
     }
     genTabs() {
         const tabs = {}
         const { keys } = this.props
+        this.preKeys = keys
         keys.filter(item => item.checked).forEach((item,index) => {
             tabs[`tab${index}`] = {
                 screen: props => <TrendingTabPage {...props} tabLabel={item.name} timeSpan={this.state.timeSpan}/>,
@@ -89,7 +92,7 @@ class TrendingPage extends Component<Props> {
     }
     navBar() {
         const { keys } = this.props
-        if(!this.tabBar) {
+        if(!this.tabBar && !ArrayUtil.isEqual(this.preKeys,keys)) {
             this.tabBar = keys.length ? createMaterialTopTabNavigator(this.genTabs(), {
                 tabBarOptions: {
                     tabStyle: styles.tabStyle,

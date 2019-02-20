@@ -19,16 +19,19 @@ import FavoriteDao from "../expand/dao/FavoriteDao";
 import Utils from "../util/Utils";
 import EventBus from "react-native-event-bus";
 import { BOTTOM_TAB_SELECT, FAVORITE_CHANGED_POPULAR } from "../emit";
+import ArrayUtil from "../util/ArrayUtil";
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular)
 class PopularPage extends Component<Props> {
     constructor(props){
         super(props)
         const { loadLanguage } = this.props
         loadLanguage(FLAG_LANGUAGE.flag_key)
+        this.preKeys = []
     }
     genTabs() {
         const tabs = {}
         const { keys } = this.props
+        this.preKeys = keys
         keys.filter(item => item.checked).forEach((item,index)=>{
             tabs[`tab${index}`] = {
                 screen: props => <PopularTabPage {...props} tabLabel={item.name}/>,
@@ -39,21 +42,27 @@ class PopularPage extends Component<Props> {
         })
         return tabs
     }
-    render() {
+    navBar() {
         const { keys } = this.props
-        const TabTopNavigator = keys.length ? createMaterialTopTabNavigator(this.genTabs(),{
-            tabBarOptions: {
-                tabStyle: styles.tabStyle,
-                upperCaseLabel: false, // 是否使用标签大写，默认为true
-                scrollEnabled: true, // 是否支持选项卡滚动，默认为false
-                style: {
-                    backgroundColor: THEME_COLOR, // tabBar 背景颜色
-                    height: 30 //设置高度，修复Android上显示问题
-                },
-                indicatorStyle: styles.indicatorStyle, // 标签指示器的样式
-                labelStyle: styles.labelStyle
-            }
-        }) : null
+        if(!this.tabBar && !ArrayUtil.isEqual(this.preKeys,keys)) {
+            this.tabBar = keys.length ? createMaterialTopTabNavigator(this.genTabs(), {
+                tabBarOptions: {
+                    tabStyle: styles.tabStyle,
+                    upperCaseLabel: false, // 是否使用标签大写，默认为true
+                    scrollEnabled: true, // 是否支持选项卡滚动，默认为false
+                    style: {
+                        backgroundColor: THEME_COLOR, // tabBar 背景颜色
+                        height: 30 //设置高度，修复Android上显示问题
+                    },
+                    indicatorStyle: styles.indicatorStyle, // 标签指示器的样式
+                    labelStyle: styles.labelStyle
+                }
+            }) : null
+        }
+        return this.tabBar
+    }
+    render() {
+        const TabTopNavigator = this.navBar()
         let statusBar = {
             backgroundColor: THEME_COLOR,
             barStyle: 'light-content'
