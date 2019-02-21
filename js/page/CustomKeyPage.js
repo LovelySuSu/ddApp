@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {
     StyleSheet,
+    Alert,
     Text,
     View,
     Button,
@@ -33,7 +34,23 @@ class CustomKeyPage extends Component<Props> {
         }
     }
     goBack() {
-        NavigationUtil.goBack(this.props.navigation)
+        if(this.changeValues.length > 0) {
+            Alert.alert('提示', '要保存修改吗？',
+                [
+                    {
+                        text: '否', onPress: () => {
+                            NavigationUtil.goBack(this.props.navigation)
+                        }
+                    }, {
+                    text: '是', onPress: () => {
+                        this.onSave()
+                    }
+                }
+                ])
+        } else {
+            NavigationUtil.goBack(this.props.navigation)
+        }
+
     }
     componentDidMount() {
         this.backPress.componentDidMount()
