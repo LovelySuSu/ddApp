@@ -84,7 +84,7 @@ class CustomKeyPage extends Component<Props> {
      */
     static _keys(props, original, state) {
         const {flag, isRemoveKey} = props.navigation.state.params
-        let key = flag === FLAG_LANGUAGE.flag_key ? "keys" : "languages"
+        let key = flag === FLAG_LANGUAGE.flag_key ? 'keys' : 'languages'
         if (isRemoveKey && !original) {
 
         } else {
@@ -92,7 +92,12 @@ class CustomKeyPage extends Component<Props> {
         }
     }
     onSave() {
-
+        // 更新本地数据
+        this.languageDao.save(this.state.keys)
+        const { loadLanguage } = this.props
+        // 更新store
+        loadLanguage(this.params.flag)
+        NavigationUtil.goBack(this.props.navigation)
     }
     onClick(data, index) {
         data.checked = !data.checked

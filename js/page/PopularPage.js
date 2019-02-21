@@ -44,7 +44,7 @@ class PopularPage extends Component<Props> {
     }
     navBar() {
         const { keys } = this.props
-        if(!this.tabBar && !ArrayUtil.isEqual(this.preKeys,keys)) {
+        if(!this.tabBar || !ArrayUtil.isEqual(this.preKeys,keys)) {
             this.tabBar = keys.length ? createMaterialTopTabNavigator(this.genTabs(), {
                 tabBarOptions: {
                     tabStyle: styles.tabStyle,
@@ -55,7 +55,8 @@ class PopularPage extends Component<Props> {
                         height: 30 //设置高度，修复Android上显示问题
                     },
                     indicatorStyle: styles.indicatorStyle, // 标签指示器的样式
-                    labelStyle: styles.labelStyle
+                    labelStyle: styles.labelStyle,
+                    lazy: true
                 }
             }) : null
         }
