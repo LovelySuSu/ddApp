@@ -78,6 +78,19 @@ class CustomKeyPage extends Component<Props> {
 
     }
     onClick(data, index) {
+        data.checked = !data.checked
+        let i = this.changeValues.indexOf(data)
+        if(i !== -1) {
+            this.changeValues.splice(i,1)
+        } else {
+            this.changeValues.push(data)
+        }
+        let keys = this.state.keys.slice()
+        keys[index] = data
+        this.state.keys[index] = data
+        this.setState({
+            keys
+        })
     }
     renderView() {
         let dataArray = this.state.keys
