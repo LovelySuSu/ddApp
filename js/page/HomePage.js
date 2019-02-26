@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
-import { BackHandler } from 'react-native'
+import { BackHandler,View } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import NavigationUtil from '../navigator/NavigationUtil'
 import DynamicNavigator from "../navigator/DynamicNavigator"
 import { connect } from "react-redux"
 import BackPressHandler from "../common/BackPressHandler";
+import ViewUtil from "../util/ViewUtil";
+import CustomTheme from "./CustomTheme";
+import actions from "../action";
 // react-native-vector-icons安装后要 react-native link react-native-vector-icons
 class HomePage extends Component<Props> {
     constructor(props){
@@ -28,13 +31,29 @@ class HomePage extends Component<Props> {
         dispatch(NavigationActions.back())
         return true // 返回true表示RN把物理返回键响应消费掉了，原生不会再做处理
     }
+    renderCustomThemeView() {
+        const { customThemeViewVisible, onShowCustomThemeView } = this.props
+        return (<CustomTheme
+            visible={customThemeViewVisible}
+            {...this.props}
+            onClose={() => onShowCustomThemeView(false)}
+        />)
+    }
     render() {
         NavigationUtil.navigation = this.props.navigation
-        return <DynamicNavigator/>
+        return <View style={{flex: 1}}>
+            <DynamicNavigator/>
+            {this.renderCustomThemeView()}
+        </View>
     }
 }
 const mapStateToProps = state => ({
-    nav: state.nav
+    nav: state.nav,
+    customThemeViewVisible: state.theme.customThemeViewVisible,
 })
 
-export default connect(mapStateToProps)(HomePage)
+const mapDispatchToProps = dispatch => ({
+    onShowCustomThemeView: (show) => dispatch(actions.onShowCustomThemeView(show)),
+})
+
+export default connect(mapStateToProps,mapDispatchToProps)(HomePage)
