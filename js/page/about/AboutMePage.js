@@ -8,7 +8,7 @@ import ViewUtil from "../../util/ViewUtil"
 import NavigationUtil from "../../navigator/NavigationUtil"
 import AboutCommon from "./AboutCommon"
 import { FLAG_ABOUT, THEME_COLOR } from "../../constant"
-import GlobalStyles from "../../res/GlobalStyles"
+import GlobalStyles from "../../res/style/GlobalStyles"
 import config from '../../res/data/config'
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Toast from "react-native-easy-toast";

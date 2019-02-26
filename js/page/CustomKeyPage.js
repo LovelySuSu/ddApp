@@ -10,7 +10,7 @@ import { connect } from "react-redux";
 import NavigationBar from "../common/NavigationBar";
 import {FLAG_LANGUAGE, THEME_COLOR} from "../constant";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import GlobalStyles from "../res/GlobalStyles";
+import GlobalStyles from "../res/style/GlobalStyles";
 import ViewUtil from "../util/ViewUtil";
 import NavigationUtil from "../navigator/NavigationUtil";
 import BackPressHandler from "../common/BackPressHandler";

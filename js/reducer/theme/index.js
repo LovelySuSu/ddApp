@@ -1,8 +1,9 @@
 import TYPES from "../../action/types";
-import { THEME_COLOR } from "../../constant";
+import ThemeFactory, {ThemeFlags} from "../../res/style/ThemeFactory";
 
 const defaultState = {
-    theme: THEME_COLOR
+    theme: ThemeFactory.createTheme(ThemeFlags.Default),
+    customThemeViewVisible: false
 }
 export default function onAction(state=defaultState,action) {
     switch (action.type) {
@@ -12,6 +13,11 @@ export default function onAction(state=defaultState,action) {
                 theme: action.theme
             }
             break
+        case TYPES.SHOW_THEME_VIEW:
+            return {
+                ...state,
+                customThemeViewVisible: action.customThemeViewVisible,
+            }
         default:
             return state
     }

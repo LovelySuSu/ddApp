@@ -13,7 +13,7 @@ import NavigationBar from "../common/NavigationBar";
 import {FLAG_LANGUAGE, THEME_COLOR} from "../constant";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import {MORE_MENU} from "../common/MoreMenu";
-import GlobalStyles from "../res/GlobalStyles";
+import GlobalStyles from "../res/style/GlobalStyles";
 import ViewUtil from "../util/ViewUtil";
 import NavigationUtil from "../navigator/NavigationUtil";
 
@@ -44,6 +44,10 @@ class MyPage extends Component<Props> {
             case MORE_MENU.Sort_Language:
                 RouteName = 'SortKeyPage'
                 params.flag = menu === MORE_MENU.Sort_Key ? FLAG_LANGUAGE.flag_key : FLAG_LANGUAGE.flag_language
+                break
+            case MORE_MENU.Custom_Theme:
+                const { onShowCustomThemeView } = this.props
+                onShowCustomThemeView(true)
                 break
         }
         if(RouteName){
@@ -161,7 +165,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({})
 
 const mapDispatchToProps = dispatch =>({
-    onThemeChange: theme => dispatch(actions.onThemeChange(theme))
+    onShowCustomThemeView: (show) => dispatch(actions.onShowCustomThemeView(show)),
 })
 
 export default connect(mapStateToProps,mapDispatchToProps)(MyPage)
