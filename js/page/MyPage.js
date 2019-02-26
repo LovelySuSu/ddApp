@@ -40,6 +40,11 @@ class MyPage extends Component<Props> {
                 params.isRemoveKey = menu === MORE_MENU.Remove_Key
                 params.flag = menu === MORE_MENU.Custom_Key ? FLAG_LANGUAGE.flag_key : FLAG_LANGUAGE.flag_language
                 break
+            case MORE_MENU.Sort_Key:
+            case MORE_MENU.Sort_Language:
+                RouteName = 'SortKeyPage'
+                params.flag = menu === MORE_MENU.Sort_Key ? FLAG_LANGUAGE.flag_key : FLAG_LANGUAGE.flag_language
+                break
         }
         if(RouteName){
             NavigationUtil.goPage(RouteName,params)
@@ -98,6 +103,9 @@ class MyPage extends Component<Props> {
                     {/*语言排序*/}
                     <View style={GlobalStyles.line}/>
                     {this.getItem(MORE_MENU.Sort_Language)}
+                    {/*语言移除*/}
+                    <View style={GlobalStyles.line}/>
+                    {this.getItem(MORE_MENU.Remove_Key)}
 
                     {/*最热管理*/}
                     <Text style={styles.groupTitle}>最热管理</Text>
@@ -106,9 +114,6 @@ class MyPage extends Component<Props> {
                     {/*标签排序*/}
                     <View style={GlobalStyles.line}/>
                     {this.getItem(MORE_MENU.Sort_Key)}
-                    {/*标签移除*/}
-                    <View style={GlobalStyles.line}/>
-                    {this.getItem(MORE_MENU.Remove_Key)}
 
                     {/*设置*/}
                     <Text style={styles.groupTitle}>设置</Text>

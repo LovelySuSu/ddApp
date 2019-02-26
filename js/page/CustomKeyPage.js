@@ -2,10 +2,7 @@ import React, {Component} from 'react';
 import {
     StyleSheet,
     Alert,
-    Text,
     View,
-    Button,
-    TouchableOpacity,
     ScrollView
 } from 'react-native';
 import actions from "../action";
@@ -19,6 +16,7 @@ import NavigationUtil from "../navigator/NavigationUtil";
 import BackPressHandler from "../common/BackPressHandler";
 import LanguageDao from "../expand/dao/LanguageDao";
 import CheckBox from 'react-native-check-box'
+import ArrayUtil from "../util/ArrayUtil";
 
 
 class CustomKeyPage extends Component<Props> {
@@ -86,14 +84,26 @@ class CustomKeyPage extends Component<Props> {
         const {flag, isRemoveKey} = props.navigation.state.params
         let key = flag === FLAG_LANGUAGE.flag_key ? 'keys' : 'languages'
         if (isRemoveKey && !original) {
-
+            //如果state中的keys为空则从props中取
+            return state && state.keys && state.keys.length !== 0 && state.keys || props.language[key].map(val => {
+                return {//注意：不直接修改props，copy一份
+                    ...val,
+                    checked: false
+                }
+            })
         } else {
             return props.language[key]
         }
     }
     onSave() {
+        let keys
+        if (this.isRemoveKey) { // 移除标签的特殊处理
+            for (let i = 0, l = this.changeValues.length; i < l; i++) {
+                ArrayUtil.remove(keys = CustomKeyPage._keys(this.props, true), this.changeValues[i], 'name')
+            }
+        }
         // 更新本地数据
-        this.languageDao.save(this.state.keys)
+        this.languageDao.save(keys || this.state.keys)
         const { loadLanguage } = this.props
         // 更新store
         loadLanguage(this.params.flag)

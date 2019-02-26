@@ -9,7 +9,7 @@ export const MORE_MENU = {
     Custom_Theme: {name: '自定义主题', Icons: Ionicons, icon: 'ios-color-palette'},
     Custom_Key: {name: '自定义标签', Icons: Ionicons, icon: 'md-checkbox-outline'},
     Sort_Key: {name: '标签排序', Icons: MaterialCommunityIcons, icon: 'sort'},
-    Remove_Key: {name: '标签移除', Icons: Ionicons, icon: 'md-remove'},
+    Remove_Key: {name: '语言移除', Icons: Ionicons, icon: 'md-remove'},
     About_Author: {name: '关于作者', Icons: Octicons, icon: 'smiley'},
     About: {name: '关于', Icons: Ionicons, icon: 'logo-github'},
     Tutorial: {name: '教程', Icons: Ionicons, icon: 'ios-bookmarks'},
