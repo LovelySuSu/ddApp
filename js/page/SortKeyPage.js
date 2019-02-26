@@ -63,9 +63,9 @@ class SortKeyPage extends Component<Props> {
     static getDerivedStateFromProps(nextProps, prevState) {
         // loadLanguage时更新checkedArray
         const checkedArray = SortKeyPage._keys(nextProps)
-        if (prevState.keys !== checkedArray) {
+        if (prevState.checkedArray.length === 0) {
             return {
-                keys: checkedArray,
+                checkedArray: checkedArray,
             }
         }
         return null;
