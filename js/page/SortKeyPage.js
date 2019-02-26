@@ -16,6 +16,8 @@ import NavigationUtil from "../navigator/NavigationUtil";
 import BackPressHandler from "../common/BackPressHandler";
 import SortableListView from  'react-native-sortable-listview'
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import ArrayUtil from "../util/ArrayUtil";
+import LanguageDao from "../expand/dao/LanguageDao";
 
 
 
@@ -25,12 +27,28 @@ class SortKeyPage extends Component<Props> {
         this.params = this.props.navigation.state.params
         this.flag = this.params.flag
         this.backPress = new BackPressHandler({ backPress:() => this.goBack })
+        this.languageDao = new LanguageDao(this.flag)
         this.state = {
             checkedArray: SortKeyPage._keys(this.props)
         }
     }
     goBack() {
-        NavigationUtil.goBack(this.props.navigation)
+        if (!ArrayUtil.isEqual(SortKeyPage._keys(this.props), this.state.checkedArray)) {
+            Alert.alert('提示', '要保存修改吗？',
+                [
+                    {
+                        text: '否', onPress: () => {
+                            NavigationUtil.goBack(this.props.navigation)
+                        }
+                    }, {
+                    text: '是', onPress: () => {
+                        this.onSave(true);
+                    }
+                }
+                ])
+        } else {
+            NavigationUtil.goBack(this.props.navigation)
+        }
     }
     componentDidMount() {
         this.backPress.componentDidMount()
@@ -66,9 +84,38 @@ class SortKeyPage extends Component<Props> {
         return dataArray.filter(val => val.checked)
     }
     onSave() {
-        // 更新本地数据
-    }
+        //保存排序后的数据
+        //获取排序后的数据
+        //更新本地数据
+        this.languageDao.save(this.getSortResult())
 
+        //重新加载排序后的标签，以便其他页面能够及时更新
+        const {loadLanguage} = this.props
+        //更新store
+        loadLanguage(this.flag)
+        NavigationUtil.goBack(this.props.navigation)
+    }
+    /**
+     * 获取排序后的标签结果
+     * @returns {Array}
+     */
+    getSortResult() {
+        const { flag } = this.props.navigation.state.params
+        let key = flag === FLAG_LANGUAGE.flag_key ? 'keys' : 'languages'
+        //从原始数据中复制一份数据出来，以便对这份数据进行进行排序
+        let sortResultArray = this.props.language[key].slice()
+        //获取排序之前的排列顺序
+        const originalCheckedArray = SortKeyPage._keys(this.props)
+        //遍历排序之前的数据，用排序后的数据checkedArray进行替换
+        for (let i = 0, j = originalCheckedArray.length; i < j; i++) {
+            let item = originalCheckedArray[i]
+            //找到要替换的元素所在位置
+            let index = this.props.language[key].indexOf(item)
+            //进行替换
+            sortResultArray.splice(index, 1, this.state.checkedArray[i])
+        }
+        return sortResultArray
+    }
     renderView() {
         return <SortableListView
             data={this.state.checkedArray}
