@@ -10,7 +10,7 @@ import {
 import actions from "../action";
 import { connect } from "react-redux";
 import NavigationBar from "../common/NavigationBar";
-import {FLAG_LANGUAGE, THEME_COLOR} from "../constant";
+import { FLAG_LANGUAGE } from "../constant";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import {MORE_MENU} from "../common/MoreMenu";
 import GlobalStyles from "../res/style/GlobalStyles";
@@ -57,11 +57,11 @@ class MyPage extends Component<Props> {
     getItem(menu) {
         return ViewUtil.getMenuItem(() => {
             this.onClick(menu)
-        },menu,THEME_COLOR)
+        },menu,this.props.theme.themeColor)
     }
     render() {
         let statusBar = {
-            backgroundColor: THEME_COLOR,
+            backgroundColor: this.props.theme.themeColor,
             barStyle: 'light-content'
         }
         return (
@@ -69,7 +69,7 @@ class MyPage extends Component<Props> {
                 <NavigationBar
                     title={'我的'}
                     statusBar={statusBar}
-                    style={{ backgroundColor: THEME_COLOR }}
+                    style={{ backgroundColor: this.props.theme.themeColor }}
                 />
                 <ScrollView>
                     <TouchableOpacity
@@ -82,7 +82,7 @@ class MyPage extends Component<Props> {
                                 size={40}
                                 style={{
                                     marginRight: 10,
-                                    color: THEME_COLOR,
+                                    color: this.props.theme.themeColor,
                                 }}
                             />
                             <Text>丁酥酥的小应用</Text>
@@ -93,7 +93,7 @@ class MyPage extends Component<Props> {
                             style={{
                                 marginRight: 10,
                                 alignSelf: 'center',
-                                color: THEME_COLOR,
+                                color: this.props.theme.themeColor,
                             }}/>
                     </TouchableOpacity>
                     <View style={GlobalStyles.line}/>
@@ -162,7 +162,9 @@ const styles = StyleSheet.create({
         color: 'gray'
     }
 });
-const mapStateToProps = state => ({})
+const mapStateToProps = state => ({
+    theme: state.theme.theme
+})
 
 const mapDispatchToProps = dispatch =>({
     onShowCustomThemeView: (show) => dispatch(actions.onShowCustomThemeView(show)),

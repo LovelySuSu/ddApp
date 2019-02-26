@@ -14,7 +14,7 @@ import { createMaterialTopTabNavigator } from 'react-navigation'
 import actions from "../action";
 import TrendingItem from "../common/TrendingItem";
 import Toast from 'react-native-easy-toast'
-import {FLAG_LANGUAGE, FLAG_STORAGE, PAGE_SIZE, THEME_COLOR, TimeSpans, TRENDING_URL} from '../constant'
+import {FLAG_LANGUAGE, FLAG_STORAGE, PAGE_SIZE, TimeSpans, TRENDING_URL} from '../constant'
 import NavigationBar from "../common/NavigationBar";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import TrendingDialog from "../common/TrendingDialog";
@@ -92,14 +92,15 @@ class TrendingPage extends Component<Props> {
     }
     navBar() {
         const { keys } = this.props
-        if(!this.tabBar || !ArrayUtil.isEqual(this.preKeys,keys)) {
+        if(this.theme !== this.props.theme || !this.tabBar || !ArrayUtil.isEqual(this.preKeys,keys)) {
+            this.theme = this.props.theme
             this.tabBar = keys.length ? createMaterialTopTabNavigator(this.genTabs(), {
                 tabBarOptions: {
                     tabStyle: styles.tabStyle,
                     upperCaseLabel: false, // 是否使用标签大写，默认为true
                     scrollEnabled: true, // 是否支持选项卡滚动，默认为false
                     style: {
-                        backgroundColor: THEME_COLOR, // tabBar 背景颜色
+                        backgroundColor: this.props.theme.themeColor, // tabBar 背景颜色
                         height: 30 //设置高度，修复Android上显示问题
                     },
                     indicatorStyle: styles.indicatorStyle, // 标签指示器的样式
@@ -112,7 +113,7 @@ class TrendingPage extends Component<Props> {
     }
     render() {
         let statusBar = {
-            backgroundColor: THEME_COLOR,
+            backgroundColor: this.props.theme.themeColor,
             barStyle: 'light-content'
         }
         const TabNavigator = this.navBar()
@@ -121,7 +122,7 @@ class TrendingPage extends Component<Props> {
                 <NavigationBar
                     titleView={this.renderTitleView()}
                     statusBar={statusBar}
-                    style={{ backgroundColor: THEME_COLOR }}
+                    style={{ backgroundColor: this.props.theme.themeColor }}
                 />
                 { TabNavigator && <TabNavigator/> }
                 { this.renderDialog() }
@@ -131,7 +132,8 @@ class TrendingPage extends Component<Props> {
     }
 }
 const mapTrendingStateToProps = state => ({
-    keys: state.language.languages
+    keys: state.language.languages,
+    theme: state.theme.theme
 })
 const mapTrendingDispatchToProps = dispatch => ({
     loadLanguage: (keyFlag) => dispatch(actions.loadLanguage(keyFlag))
@@ -230,9 +232,9 @@ class TrendingTab extends Component<Props> {
                 refreshControl={
                     <RefreshControl
                         title={'loading'}
-                        titleColor={ THEME_COLOR }
-                        colors={ [THEME_COLOR] }
-                        tintColor={ THEME_COLOR }
+                        titleColor={ this.props.theme.themeColor }
+                        colors={ [this.props.theme.themeColor] }
+                        tintColor={ this.props.theme.themeColor }
                         refreshing={store.isLoading}
                         onRefresh={() => this.onLoadData(false)}
                     />
@@ -259,7 +261,8 @@ class TrendingTab extends Component<Props> {
     }
 }
 const mapStateToProps = state => ({
-    trending: state.trending
+    trending: state.trending,
+    theme: state.theme.theme
 })
 const mapDispatchToProps = dispatch => ({
     onTrendingRefresh: (storeName,url,pageSize,favoriteDao) => dispatch(actions.onTrendingRefresh(storeName,url,pageSize,favoriteDao)),

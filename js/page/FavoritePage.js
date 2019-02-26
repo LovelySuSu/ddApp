@@ -11,7 +11,7 @@ import { connect } from 'react-redux'
 import { createMaterialTopTabNavigator } from 'react-navigation'
 import actions from "../action";
 import PopularItem from "../common/PopularItem";
-import { THEME_COLOR, FLAG_STORAGE } from '../constant'
+import { FLAG_STORAGE } from '../constant'
 import NavigationBar from "../common/NavigationBar"
 import NavigationUtil from "../navigator/NavigationUtil"
 import Utils from "../util/Utils";
@@ -20,7 +20,7 @@ import FavoriteDao from "../expand/dao/FavoriteDao";
 import EventBus from "react-native-event-bus";
 import {BOTTOM_TAB_SELECT, FAVORITE_CHANGED_POPULAR, FAVORITE_CHANGED_TRENDING} from "../emit";
 
-export default class FavoritePage extends Component<Props> {
+class FavoritePage extends Component<Props> {
     constructor(props){
         super(props)
         this.tabNames = ['最热','趋势']
@@ -43,7 +43,7 @@ export default class FavoritePage extends Component<Props> {
                 tabStyle: styles.tabStyle,
                 upperCaseLabel: false, // 是否使用标签大写，默认为true
                 style: {
-                    backgroundColor: THEME_COLOR, // tabBar 背景颜色
+                    backgroundColor: this.props.theme.themeColor, // tabBar 背景颜色
                     height: 30 //设置高度，修复Android上显示问题
                 },
                 indicatorStyle: styles.indicatorStyle, // 标签指示器的样式
@@ -51,7 +51,7 @@ export default class FavoritePage extends Component<Props> {
             }
         })
         let statusBar = {
-            backgroundColor: THEME_COLOR,
+            backgroundColor: this.props.theme.themeColor,
             barStyle: 'light-content'
         }
         return (
@@ -59,7 +59,7 @@ export default class FavoritePage extends Component<Props> {
                 <NavigationBar
                     title={'收藏'}
                     statusBar={statusBar}
-                    style={{ backgroundColor: THEME_COLOR }}
+                    style={{ backgroundColor: this.props.theme.themeColor }}
                 />
                 <TabTopNavigator/>
             </View>
@@ -133,9 +133,9 @@ class FavoriteTab extends Component<Props> {
                 refreshControl={
                     <RefreshControl
                         title={'loading'}
-                        titleColor={ THEME_COLOR }
-                        colors={ [THEME_COLOR] }
-                        tintColor={ THEME_COLOR }
+                        titleColor={ this.props.theme.themeColor }
+                        colors={ [this.props.theme.themeColor] }
+                        tintColor={ this.props.theme.themeColor }
                         refreshing={store.isLoading}
                         onRefresh={() => this.onLoadData(false)}
                     />
@@ -145,12 +145,17 @@ class FavoriteTab extends Component<Props> {
     }
 }
 const mapStateToProps = state => ({
-    favorite: state.favorite
+    favorite: state.favorite,
+    theme: state.theme.theme
 })
 const mapDispatchToProps = dispatch => ({
     onLoadFavoriteData: (flag,isShowLoading) => dispatch(actions.onLoadFavoriteData(flag,isShowLoading)),
 })
+const mapFavoriteStateToProps = state => ({
+    theme: state.theme.theme
+})
 const FavoriteTabPage = connect(mapStateToProps,mapDispatchToProps)(FavoriteTab)
+export default connect(mapFavoriteStateToProps)(FavoritePage)
 const styles = StyleSheet.create({
     container: {
         flex: 1,
