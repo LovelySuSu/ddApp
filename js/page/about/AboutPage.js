@@ -6,18 +6,20 @@ import {
 import ViewUtil from "../../util/ViewUtil"
 import NavigationUtil from "../../navigator/NavigationUtil"
 import AboutCommon from "./AboutCommon"
-import { FLAG_ABOUT, THEME_COLOR } from "../../constant"
+import { FLAG_ABOUT } from "../../constant"
 import GlobalStyles from "../../res/style/GlobalStyles"
 import config from '../../res/data/config'
 import { MORE_MENU } from "../../common/MoreMenu"
+import { connect } from "react-redux"
 
 
-export default class AboutPage extends Component<Props> {
+class AboutPage extends Component<Props> {
     constructor(props) {
         super(props)
         this.params = this.props.navigation.state.params
         this.aboutCommon = new AboutCommon({
             ...this.params,
+            theme: this.props.theme,
             navigation: this.props.navigation,
             flagAbout: FLAG_ABOUT.flag_about
         },data => {
@@ -59,7 +61,7 @@ export default class AboutPage extends Component<Props> {
     getItem(menu) {
         return ViewUtil.getMenuItem(() => {
             this.onClick(menu)
-        },menu,THEME_COLOR)
+        },menu,this.props.theme.themeColor)
     }
     render() {
         const content = <View>
@@ -74,3 +76,7 @@ export default class AboutPage extends Component<Props> {
         )
     }
 }
+const mapStateToProp = state => ({
+    theme: state.theme.theme
+})
+export default connect(mapStateToProp)(AboutPage)

@@ -7,19 +7,21 @@ import {
 import ViewUtil from "../../util/ViewUtil"
 import NavigationUtil from "../../navigator/NavigationUtil"
 import AboutCommon from "./AboutCommon"
-import { FLAG_ABOUT, THEME_COLOR } from "../../constant"
+import { FLAG_ABOUT } from "../../constant"
 import GlobalStyles from "../../res/style/GlobalStyles"
 import config from '../../res/data/config'
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Toast from "react-native-easy-toast";
+import { connect } from "react-redux"
 
 
-export default class AboutMePage extends Component<Props> {
+class AboutMePage extends Component<Props> {
     constructor(props) {
         super(props)
         this.params = this.props.navigation.state.params
         this.aboutCommon = new AboutCommon({
             ...this.params,
+            theme: this.props.theme,
             navigation: this.props.navigation,
             flagAbout: FLAG_ABOUT.flag_about
         },data => {
@@ -66,7 +68,7 @@ export default class AboutMePage extends Component<Props> {
             this.setState({
                 [key]: !this.state[key]
             });
-        }, data.name, THEME_COLOR, Ionicons, data.icon, isShow ? 'ios-arrow-up' : 'ios-arrow-down')
+        }, data.name, this.props.theme.themeColor, Ionicons, data.icon, isShow ? 'ios-arrow-up' : 'ios-arrow-down')
     }
     /**
      * 显示列表数据
@@ -80,7 +82,7 @@ export default class AboutMePage extends Component<Props> {
             let title = isShowAccount ? dic[i].title + ':' + dic[i].account : dic[i].title;
             views.push(
                 <View key={i}>
-                    {ViewUtil.getSettingItem(() => this.onClick(dic[i]), title, THEME_COLOR)}
+                    {ViewUtil.getSettingItem(() => this.onClick(dic[i]), title, this.props.theme.themeColor)}
                     <View style={GlobalStyles.line}/>
                 </View>
             )
@@ -117,3 +119,7 @@ export default class AboutMePage extends Component<Props> {
         )
     }
 }
+const mapStateToProps = state => ({
+    theme: state.theme.theme
+})
+export default connect(mapStateToProps)(AboutMePage)

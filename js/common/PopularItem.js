@@ -9,7 +9,7 @@ import {
 import BaseItem from "./BaseItem";
 export default class PopularItem extends BaseItem{
     render() {
-        const { item } = this.props
+        const { item,theme } = this.props
         if(!item || !item.owner) return null
         return (
             <TouchableOpacity

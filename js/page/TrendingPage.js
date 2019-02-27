@@ -190,6 +190,7 @@ class TrendingTab extends Component<Props> {
     renderItem(item) {
         return <TrendingItem
             item={item}
+            theme={this.props.theme}
             onSelect={(callback) => NavigationUtil.goPage('DetailPage',{
                 navigation: this.props.navigation,
                 projectMode: item,

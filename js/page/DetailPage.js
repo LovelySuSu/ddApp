@@ -6,7 +6,7 @@ import {
     TouchableOpacity,
     WebView
 } from 'react-native';
-import {BASE_URL, FLAG_STORAGE, THEME_COLOR} from "../constant";
+import { BASE_URL } from "../constant";
 import NavigationBar from "../common/NavigationBar";
 import ViewUtil from "../util/ViewUtil";
 import NavigationUtil from "../navigator/NavigationUtil";
@@ -14,8 +14,9 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import BackPressHandler from "../common/BackPressHandler";
 import FavoriteDao from "../expand/dao/FavoriteDao";
 import Utils from "../util/Utils";
+import { connect } from "react-redux"
 
-export default class DetailPage extends Component<Props> {
+class DetailPage extends Component<Props> {
     constructor(props){
         super(props)
         this.params = this.props.navigation.state.params
@@ -75,7 +76,7 @@ export default class DetailPage extends Component<Props> {
     }
     render() {
         let statusBar = {
-            backgroundColor: THEME_COLOR,
+            backgroundColor: this.props.theme.themeColor,
             barStyle: 'light-content'
         }
         return (
@@ -85,7 +86,7 @@ export default class DetailPage extends Component<Props> {
                     statusBar={statusBar}
                     leftButton={ViewUtil.getLeftBackButton(()=> this.goBack())}
                     rightButton={this.renderRightButton()}
-                    style={{ backgroundColor: THEME_COLOR }}
+                    style={{ backgroundColor: this.props.theme.themeColor }}
                     titleLayoutStyle={{ paddingHorizontal: 30 }}
                 />
                 <WebView
@@ -98,7 +99,10 @@ export default class DetailPage extends Component<Props> {
         );
     }
 }
-
+const mapStateToProps = state => ({
+    theme: state.theme.theme
+})
+export default connect(mapStateToProps)(DetailPage)
 const styles = StyleSheet.create({
     container: {
         flex: 1,

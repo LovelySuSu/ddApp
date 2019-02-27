@@ -2,7 +2,7 @@ import BackPressHandler from "../../common/BackPressHandler"
 import NavigationUtil from "../../navigator/NavigationUtil"
 import ParallaxScrollView from 'react-native-parallax-scroll-view'
 import React from "react"
-import {AVATAR_SIZE, PARALLAX_HEADER_HEIGHT, STICKY_HEADER_HEIGHT, THEME_COLOR, TOP} from "../../constant"
+import {AVATAR_SIZE, PARALLAX_HEADER_HEIGHT, STICKY_HEADER_HEIGHT, TOP} from "../../constant"
 import {
     View,
     Image,
@@ -101,7 +101,7 @@ export default class AboutCommon {
         const renderConfig = this.getParallaxRenderConfig(params)
         return (
             <ParallaxScrollView
-                backgroundColor={ THEME_COLOR }
+                backgroundColor={ this.props.theme.themeColor }
                 contentBackgroundColor={'#F3F3F4'}
                 parallaxHeaderHeight={ PARALLAX_HEADER_HEIGHT }
                 stickyHeaderHeight={ STICKY_HEADER_HEIGHT }

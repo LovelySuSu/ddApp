@@ -114,6 +114,7 @@ class FavoriteTab extends Component<Props> {
         let Item = this.storeName === FLAG_STORAGE.flag_popular ? PopularItem : TrendingItem
         return <Item
             item={item}
+            theme={this.props.theme}
             onSelect={(callback) => NavigationUtil.goPage('DetailPage',{
                 navigation: this.props.navigation,
                 projectMode: item,

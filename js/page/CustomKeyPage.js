@@ -8,7 +8,7 @@ import {
 import actions from "../action";
 import { connect } from "react-redux";
 import NavigationBar from "../common/NavigationBar";
-import {FLAG_LANGUAGE, THEME_COLOR} from "../constant";
+import { FLAG_LANGUAGE } from "../constant";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import GlobalStyles from "../res/style/GlobalStyles";
 import ViewUtil from "../util/ViewUtil";
@@ -148,7 +148,7 @@ class CustomKeyPage extends Component<Props> {
             name={checked ? 'ios-checkbox' : 'md-square-outline'}
             size={20}
             style={{
-                color: THEME_COLOR,
+                color: this.props.theme.themeColor,
             }}/>
     }
     renderCheckBox(data,index){
@@ -163,7 +163,7 @@ class CustomKeyPage extends Component<Props> {
     }
     render() {
         let statusBar = {
-            backgroundColor: THEME_COLOR,
+            backgroundColor: this.props.theme.themeColor,
             barStyle: 'light-content'
         }
         let title = this.isRemoveKey ? '移除标签': this.flag === FLAG_LANGUAGE.flag_key ? '自定义标签' : '自定义语言'
@@ -173,7 +173,7 @@ class CustomKeyPage extends Component<Props> {
                 <NavigationBar
                     title={title}
                     statusBar={statusBar}
-                    style={{ backgroundColor: THEME_COLOR }}
+                    style={{ backgroundColor: this.props.theme.themeColor }}
                     rightButton={ViewUtil.getRightButton(rightButtonTitle,()=>{
                         this.onSave()
                     })}
@@ -191,7 +191,8 @@ class CustomKeyPage extends Component<Props> {
     }
 }
 const mapStateToProps = state => ({
-    language: state.language
+    language: state.language,
+    theme: state.theme.theme
 })
 const mapDispatchToProps = dispatch => ({
     loadLanguage: (flagKey) => dispatch(actions.loadLanguage(flagKey)),

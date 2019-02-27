@@ -4,13 +4,13 @@ import {
     View,
     WebView
 } from 'react-native';
-import { THEME_COLOR } from "../constant"
 import NavigationBar from "../common/NavigationBar"
 import ViewUtil from "../util/ViewUtil"
 import NavigationUtil from "../navigator/NavigationUtil"
 import BackPressHandler from "../common/BackPressHandler"
+import { connect } from "react-redux"
 
-export default class WebViewPage extends Component<Props> {
+class WebViewPage extends Component<Props> {
     constructor(props){
         super(props)
         this.params = this.props.navigation.state.params
@@ -41,7 +41,7 @@ export default class WebViewPage extends Component<Props> {
     }
     render() {
         let statusBar = {
-            backgroundColor: THEME_COLOR,
+            backgroundColor: this.props.theme.themeColor,
             barStyle: 'light-content'
         }
         return (
@@ -50,7 +50,7 @@ export default class WebViewPage extends Component<Props> {
                     title={this.state.title}
                     statusBar={statusBar}
                     leftButton={ViewUtil.getLeftBackButton(()=> this.goBack())}
-                    style={{ backgroundColor: THEME_COLOR }}
+                    style={{ backgroundColor: this.props.theme.themeColor }}
                     titleLayoutStyle={{ paddingHorizontal: 30 }}
                 />
                 <WebView
@@ -63,7 +63,10 @@ export default class WebViewPage extends Component<Props> {
         );
     }
 }
-
+const mapStateToProps = state => ({
+    theme: state.theme.theme
+})
+export default connect(mapStateToProps)(WebViewPage)
 const styles = StyleSheet.create({
     container: {
         flex: 1,

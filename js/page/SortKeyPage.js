@@ -9,7 +9,7 @@ import {
 import actions from "../action";
 import { connect } from "react-redux";
 import NavigationBar from "../common/NavigationBar";
-import {FLAG_LANGUAGE, THEME_COLOR} from "../constant";
+import { FLAG_LANGUAGE } from "../constant";
 import GlobalStyles from "../res/style/GlobalStyles";
 import ViewUtil from "../util/ViewUtil";
 import NavigationUtil from "../navigator/NavigationUtil";
@@ -124,12 +124,12 @@ class SortKeyPage extends Component<Props> {
                 this.state.checkedArray.splice(e.to, 0, this.state.checkedArray.splice(e.from, 1)[0])
                 this.forceUpdate()
             }}
-            renderRow={row => <SortCell data={row} {...this.params}/>}
+            renderRow={row => <SortCell data={row} theme={this.props.theme} {...this.params}/>}
         />
     }
     render() {
         let statusBar = {
-            backgroundColor: THEME_COLOR,
+            backgroundColor: this.props.theme.themeColor,
             barStyle: 'light-content'
         }
         let title = this.flag === FLAG_LANGUAGE.flag_key ? '标签排序' : '语言排序'
@@ -138,7 +138,7 @@ class SortKeyPage extends Component<Props> {
                 <NavigationBar
                     title={title}
                     statusBar={statusBar}
-                    style={{ backgroundColor: THEME_COLOR }}
+                    style={{ backgroundColor: this.props.theme.themeColor }}
                     leftButton={ViewUtil.getLeftBackButton(()=>{
                         this.goBack()
                     })}
@@ -165,14 +165,15 @@ class SortCell extends Component {
                 <MaterialCommunityIcons
                     name={'sort'}
                     size={16}
-                    style={{marginRight: 10, color: THEME_COLOR}}/>
+                    style={{marginRight: 10, color: this.props.theme.themeColor}}/>
                 <Text>{this.props.data.name}</Text>
             </View>
         </TouchableHighlight>
     }
 }
 const mapStateToProps = state => ({
-    language: state.language
+    language: state.language,
+    theme: state.theme.theme
 })
 const mapDispatchToProps = dispatch => ({
     loadLanguage: (flagKey) => dispatch(actions.loadLanguage(flagKey)),
