@@ -1,9 +1,12 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
 import NavigationUtil from "../navigator/NavigationUtil";
+import actions from "../action";
+import { connect } from "react-redux"
 
-export default class WelcomePage extends Component<Props> {
+class WelcomePage extends Component<Props> {
     componentDidMount() {
+        this.props.onThemeInit()
         this.timer = setTimeout(() => {
             NavigationUtil.resetToHomePage({
                 navigation: this.props.navigation
@@ -22,7 +25,10 @@ export default class WelcomePage extends Component<Props> {
         );
     }
 }
-
+const mapDispatchToProps = dispatch => ({
+    onThemeInit: () => dispatch(actions.onThemeInit()),
+})
+export default connect(null,mapDispatchToProps)(WelcomePage)
 const styles = StyleSheet.create({
     container: {
         flex: 1,
