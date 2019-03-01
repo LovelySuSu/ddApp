@@ -1,6 +1,6 @@
 import Utils from "../util/Utils";
 
-export function handleData(actionType,dispatch,storeName,data,pageSize,favoriteDao) {
+export function handleData(actionType,dispatch,storeName,data,pageSize,favoriteDao,params) {
     let items = []
     if(data && data.data) {
         data = data.data
@@ -18,7 +18,8 @@ export function handleData(actionType,dispatch,storeName,data,pageSize,favoriteD
             storeName,
             items: items,
             projectModes: projectModes,
-            pageIndex: 1
+            pageIndex: 1,
+            ...params
         })
     })
 }

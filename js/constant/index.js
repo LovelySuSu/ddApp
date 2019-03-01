@@ -28,3 +28,6 @@ export const AVATAR_SIZE = 90
 export const PARALLAX_HEADER_HEIGHT = 270
 export const TOP = (Platform.OS === 'ios') ? 20 + (DeviceInfo.isIPhoneX_deprecated ? 24 : 0) : 0
 export const STICKY_HEADER_HEIGHT = (Platform.OS === 'ios') ? NAV_BAR_HEIGHT_IOS + TOP : NAV_BAR_HEIGHT_ANDROID
+
+export const API_URL = 'https://api.github.com/search/repositories?q='
+export const QUERY_STR = '&sort=stars'
