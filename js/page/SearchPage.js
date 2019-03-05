@@ -24,6 +24,7 @@ import Toast from 'react-native-easy-toast'
 import PopularItem from "../common/PopularItem"
 import Utils from "../util/Utils"
 import LanguageDao from "../expand/dao/LanguageDao";
+import {loadLanguage} from "../action/language";
 class SearchPage extends Component<Props> {
     constructor(props){
         super(props)
@@ -31,9 +32,13 @@ class SearchPage extends Component<Props> {
         this.params = this.props.navigation.state.params
         this.favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular)
         this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key)
-        this.backPress = new BackPressHandler({backPress:() => this.goBack})
+        this.isKeyChange = false
+        this.backPress = new BackPressHandler({ backPress:() => this.goBack })
     }
     goBack() {
+        if(this.isKeyChange) {
+            this.props.loadLanguage(FLAG_LANGUAGE.flag_key)
+        }
         NavigationUtil.goBack(this.props.navigation)
     }
     componentDidMount() {
@@ -110,15 +115,19 @@ class SearchPage extends Component<Props> {
             </View>
     }
     saveKey() {
-        if (Utils.checkKeyIsExist(this.props.keys,this.inputKey)) return
+        if (Utils.checkKeyIsExist(this.props.keys,this.inputKey)) {
+            this.refs.toast.show(key.name + '已存在')
+            return
+        }
         let key = {
             "path": this.inputKey,
             "name": this.inputKey,
             "checked": true
-        };
+        }
         this.props.keys.unshift(key) // 将key添加到数组的开头
         this.languageDao.save(this.props.keys)
         this.refs.toast.show(key.name + '保存成功')
+        this.isKeyChange = true
     }
     render() {
         const { projectModes,isLoading } = this.props.search
@@ -195,7 +204,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     onSearch: (inputKey, pageSize, token, favoriteDao, popularKeys, callBack) => dispatch(actions.onSearch(inputKey, pageSize, token, favoriteDao, popularKeys, callBack)),
     onLoadMoreSearch: (pageIndex,pageSize,dataArray,favoriteDao,callBack) => dispatch(actions.onLoadMoreSearch(pageIndex,pageSize,dataArray,favoriteDao,callBack)),
-    onSearchCancel: (searchToken) => dispatch(actions.onSearchCancel(searchToken))
+    onSearchCancel: (searchToken) => dispatch(actions.onSearchCancel(searchToken)),
+    loadLanguage: (flagKey) => dispatch(loadLanguage(flagKey))
 })
 export default connect(mapStateToProps,mapDispatchToProps)(SearchPage)
 
