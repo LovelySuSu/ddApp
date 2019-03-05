@@ -7,21 +7,26 @@ import {
     Platform,
     FlatList,
     RefreshControl,
-    ActivityIndicator, TouchableOpacity
-} from 'react-native';
+    ActivityIndicator,
+    TouchableOpacity
+} from 'react-native'
 import { connect } from 'react-redux'
-import NavigationBar from "../common/NavigationBar";
-import NavigationUtil from "../navigator/NavigationUtil";
+import NavigationBar from "../common/NavigationBar"
+import NavigationUtil from "../navigator/NavigationUtil"
 import BackPressHandler from "../common/BackPressHandler"
-import actions from "../action";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import ViewUtil from "../util/ViewUtil";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+import actions from "../action"
+import ViewUtil from "../util/ViewUtil"
+import FavoriteDao from "../expand/dao/FavoriteDao"
+import {FLAG_STORAGE, PAGE_SIZE} from "../constant"
+import Toast from 'react-native-easy-toast'
+import PopularItem from "../common/PopularItem"
+import Utils from "../util/Utils"
 class SearchPage extends Component<Props> {
     constructor(props){
         super(props)
         this.inputKey = ''
         this.params = this.props.navigation.state.params
+        this.favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular)
         this.backPress = new BackPressHandler({backPress:() => this.goBack})
     }
     goBack() {
@@ -33,8 +38,17 @@ class SearchPage extends Component<Props> {
     componentWillUnmount() {
         this.backPress.componentWillUnmount()
     }
-    loadData() {
-
+    loadData(loadMore) {
+        const {onLoadMoreSearch, onSearch, search, keys} = this.props
+        if (loadMore) {
+            onLoadMoreSearch(++search.pageIndex, PAGE_SIZE, search.items, this.favoriteDao, callback => {
+                this.refs.toast.show('已无更多数据')
+            })
+        } else {
+            onSearch(this.inputKey, PAGE_SIZE, this.searchToken = new Date().getTime(), this.favoriteDao, keys, message => {
+                this.refs.toast.show(message)
+            })
+        }
     }
     renderTitleView() {
         return (
@@ -46,19 +60,53 @@ class SearchPage extends Component<Props> {
                 placeholderTextColor={'rgba(255,255,255,0.6)'}
             />)
     }
+    onRightButtonClick() {
+        const { onSearchCancel, search } = this.props
+        if (search.showText === '搜索') {
+            this.loadData()
+        } else {
+            onSearchCancel(this.searchToken)
+        }
+
+    }
     renderRightButton() {
+        const { search } = this.props
         return (<TouchableOpacity
                 onPress={() => {
-                    this.refs.input.blur()//收起键盘
+                    this.refs.input.blur() //收起键盘
+                    this.onRightButtonClick()
                 }}
             >
                 <View style={{ marginRight: 10 }}>
-                    <Text style={styles.title}>{'搜索'}</Text>
+                    <Text style={styles.title}>{search.showText}</Text>
                 </View>
             </TouchableOpacity>
         )
     }
+    renderItem(item) {
+        return <PopularItem
+            item={item}
+            theme={this.props.theme}
+            onSelect={(callback) => NavigationUtil.goPage('DetailPage',{
+                navigation: this.props.navigation,
+                projectMode: item,
+                flag: FLAG_STORAGE.flag_popular,
+                callback: callback
+            })}
+            onFavorite={(item,isFavorite)=> Utils.onFavorite(this.favoriteDao,item,isFavorite,FLAG_STORAGE.flag_popular)}
+        />
+    }
+    genIndicator() {
+        return this.props.search.hideLoadingMore ? null :
+            <View style={styles.indicatorContainer}>
+                <ActivityIndicator
+                    style={styles.indicator}
+                />
+                <Text>正在加载更多</Text>
+            </View>
+    }
     render() {
+        const { projectModes,isLoading } = this.props.search
         let statusBar = {
             backgroundColor: this.props.theme.themeColor,
             barStyle: 'light-content',
@@ -72,6 +120,38 @@ class SearchPage extends Component<Props> {
                     statusBar={statusBar}
                     style={{ backgroundColor: this.props.theme.themeColor }}
                 />
+                <FlatList
+                    data={projectModes}
+                    renderItem={({item}) => this.renderItem(item)}
+                    keyExtractor={item => item.id.toString()}
+                    refreshControl={
+                        <RefreshControl
+                            title={'loading'}
+                            titleColor={ this.props.theme.themeColor }
+                            colors={ [this.props.theme.themeColor] }
+                            tintColor={ this.props.theme.themeColor }
+                            refreshing={isLoading}
+                            onRefresh={() => this.loadData(false)}
+                        />
+                    }
+                    onEndReached={() => {
+                        setTimeout(()=>{
+                            if(this.canLoadMore){
+                                this.loadData(true)
+                                this.canLoadMore = false
+                            }
+                        })
+                    }}
+                    onEndReachedThreshold={0.1}
+                    onMomentumScrollBegin={() => {
+                        this.canLoadMore = true
+                    }}
+                    ListFooterComponent={() => this.genIndicator()}
+                />
+                <Toast
+                    ref={'toast'}
+                    position={'center'}
+                />
             </View>
 
         );
@@ -83,7 +163,8 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => ({
     onSearch: (inputKey, pageSize, token, favoriteDao, popularKeys, callBack) => dispatch(actions.onSearch(inputKey, pageSize, token, favoriteDao, popularKeys, callBack)),
-    onLoadMoreSearch: (pageIndex,pageSize,dataArray,favoriteDao,callBack) => dispatch(actions.onLoadMoreSearch(pageIndex,pageSize,dataArray,favoriteDao,callBack))
+    onLoadMoreSearch: (pageIndex,pageSize,dataArray,favoriteDao,callBack) => dispatch(actions.onLoadMoreSearch(pageIndex,pageSize,dataArray,favoriteDao,callBack)),
+    onSearchCancel: (searchToken) => dispatch(actions.onSearchCancel(searchToken))
 })
 export default connect(mapStateToProps,mapDispatchToProps)(SearchPage)
 
