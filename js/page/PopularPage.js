@@ -5,7 +5,7 @@ import {
     View,
     FlatList,
     RefreshControl,
-    ActivityIndicator
+    ActivityIndicator, TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux'
 import { createMaterialTopTabNavigator } from 'react-navigation'
@@ -20,6 +20,7 @@ import Utils from "../util/Utils";
 import EventBus from "react-native-event-bus";
 import { BOTTOM_TAB_SELECT, FAVORITE_CHANGED_POPULAR } from "../emit";
 import ArrayUtil from "../util/ArrayUtil";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular)
 class PopularPage extends Component<Props> {
     constructor(props){
@@ -63,6 +64,19 @@ class PopularPage extends Component<Props> {
         }
         return this.tabBar
     }
+    renderRightButton() {
+        return (<TouchableOpacity
+                    onPress={()=> {
+                        NavigationUtil.goPage('SearchPage')
+                    }}>
+                    <FontAwesome
+                        name={'search'}
+                        size={20}
+                        style={{color: 'white', marginRight: 10}}
+                    />
+                </TouchableOpacity>
+        )
+    }
     render() {
         const TabTopNavigator = this.navBar()
         let statusBar = {
@@ -75,6 +89,7 @@ class PopularPage extends Component<Props> {
                     title={'最热'}
                     statusBar={statusBar}
                     style={{ backgroundColor: this.props.theme.themeColor }}
+                    rightButton={this.renderRightButton()}
                 />
                 { TabTopNavigator && <TabTopNavigator/> }
             </View>

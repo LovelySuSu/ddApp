@@ -3,20 +3,24 @@ import {
     StyleSheet,
     Text,
     View,
+    TextInput,
+    Platform,
     FlatList,
     RefreshControl,
-    ActivityIndicator
+    ActivityIndicator, TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux'
-import { createMaterialTopTabNavigator } from 'react-navigation'
-import {FLAG_STORAGE} from '../constant'
 import NavigationBar from "../common/NavigationBar";
 import NavigationUtil from "../navigator/NavigationUtil";
 import BackPressHandler from "../common/BackPressHandler"
 import actions from "../action";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import ViewUtil from "../util/ViewUtil";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 class SearchPage extends Component<Props> {
     constructor(props){
         super(props)
+        this.inputKey = ''
         this.params = this.props.navigation.state.params
         this.backPress = new BackPressHandler({backPress:() => this.goBack})
     }
@@ -32,15 +36,39 @@ class SearchPage extends Component<Props> {
     loadData() {
 
     }
+    renderTitleView() {
+        return (
+            <TextInput
+                ref="input"
+                placeholder={'C#'}
+                onChangeText={text => this.inputKey = text}
+                style={styles.textInput}
+                placeholderTextColor={'rgba(255,255,255,0.6)'}
+            />)
+    }
+    renderRightButton() {
+        return (<TouchableOpacity
+                onPress={() => {
+                    this.refs.input.blur()//收起键盘
+                }}
+            >
+                <View style={{ marginRight: 10 }}>
+                    <Text style={styles.title}>{'搜索'}</Text>
+                </View>
+            </TouchableOpacity>
+        )
+    }
     render() {
         let statusBar = {
             backgroundColor: this.props.theme.themeColor,
-            barStyle: 'light-content'
+            barStyle: 'light-content',
         }
         return (
             <View style={{ flex: 1 }}>
                 <NavigationBar
-                    title={'搜索'}
+                    titleView={this.renderTitleView()}
+                    leftButton={ViewUtil.getLeftBackButton(()=> this.goBack())}
+                    rightButton={this.renderRightButton()}
                     statusBar={statusBar}
                     style={{ backgroundColor: this.props.theme.themeColor }}
                 />
@@ -86,5 +114,23 @@ const styles = StyleSheet.create({
     indicator: {
         color: 'red',
         margin: 10
+    },
+    textInput: {
+        width: '100%',
+        height: 26,
+        borderWidth: (Platform.OS === 'ios') ? 1 : 0,
+        borderColor: "white",
+        borderRadius: 6,
+        alignSelf: 'center',
+        paddingLeft: 5,
+        marginRight: 10,
+        marginLeft: 5,
+        opacity: 0.7,
+        color: 'white'
+    },
+    title: {
+        fontSize: 14,
+        color: "white",
+        fontWeight: '500'
     }
 });
