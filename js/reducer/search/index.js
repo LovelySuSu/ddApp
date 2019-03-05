@@ -2,6 +2,7 @@ import TYPES from "../../action/types";
 
 const defaultState = {
     showText: '搜索',
+    showBottomButton: false,
     items: [],
     isLoading: false,
     projectModels: [],// 要显示的数据
@@ -27,7 +28,8 @@ export default function onAction(state=defaultState,action) {
                 isLoading: false,
                 pageIndex: action.pageIndex,
                 showText: '搜索',
-                inputKey: action.inputKey
+                inputKey: action.inputKey,
+                showBottomButton: action.showBottomButton,
             }
             break
         case TYPES.SEARCH_FAIL:

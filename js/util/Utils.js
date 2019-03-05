@@ -27,4 +27,12 @@ export default class Utils {
             favoriteDao.removeFavoriteItem(key);
         }
     }
+    /**
+     * 检查key是否存在于keys中
+     * @param keys
+     * @param key
+     */
+    static checkKeyIsExist(keys, key) {
+        return keys.map(item => item.name.toLowerCase()).includes(key.toLowerCase())
+    }
 }

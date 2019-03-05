@@ -2,6 +2,7 @@ import Types from "../types"
 import { dealItems, handleData } from "../ActionUtil";
 import { API_URL, QUERY_STR } from "../../constant";
 import ArrayUtil from "../../util/ArrayUtil";
+import Utils from "../../util/Utils";
 
 const CANCEL_TOKEN = []
 /**
@@ -33,7 +34,8 @@ export function onSearch(inputKey, pageSize, token, favoriteDao, popularKeys, ca
             }
             let items = responseData.items
             handleData(Types.SEARCH_REFRESH_SUCCESS, dispatch, "", {data: items}, pageSize, favoriteDao, {
-                inputKey
+                inputKey,
+                showBottomButton: !Utils.checkKeyIsExist(popularKeys, inputKey),
             })
         }).catch(e => {
             console.log(e)

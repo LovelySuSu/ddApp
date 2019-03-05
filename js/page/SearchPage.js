@@ -8,7 +8,9 @@ import {
     FlatList,
     RefreshControl,
     ActivityIndicator,
-    TouchableOpacity
+    TouchableOpacity,
+    Dimensions,
+    DeviceInfo
 } from 'react-native'
 import { connect } from 'react-redux'
 import NavigationBar from "../common/NavigationBar"
@@ -124,6 +126,9 @@ class SearchPage extends Component<Props> {
                     data={projectModes}
                     renderItem={({item}) => this.renderItem(item)}
                     keyExtractor={item => item.id.toString()}
+                    style={{
+                        marginBottom : 45 + (DeviceInfo.isIPhoneX_deprecated ? 34 : 0)
+                    }}
                     refreshControl={
                         <RefreshControl
                             title={'loading'}
@@ -148,6 +153,18 @@ class SearchPage extends Component<Props> {
                     }}
                     ListFooterComponent={() => this.genIndicator()}
                 />
+                {
+                    this.props.search.showBottomButton ? <TouchableOpacity
+                        style={[styles.bottomButton, { backgroundColor: this.props.theme.themeColor }]}
+                        onPress={() => {
+                            // this.saveKey();
+                        }}
+                    >
+                        <View style={{justifyContent: 'center'}}>
+                            <Text style={styles.title}>朕收下了</Text>
+                        </View>
+                    </TouchableOpacity> : null
+                }
                 <Toast
                     ref={'toast'}
                     position={'center'}
@@ -159,7 +176,8 @@ class SearchPage extends Component<Props> {
 }
 const mapStateToProps = state => ({
     theme: state.theme.theme,
-    search: state.search
+    search: state.search,
+    keys: state.language.keys
 })
 const mapDispatchToProps = dispatch => ({
     onSearch: (inputKey, pageSize, token, favoriteDao, popularKeys, callBack) => dispatch(actions.onSearch(inputKey, pageSize, token, favoriteDao, popularKeys, callBack)),
@@ -213,5 +231,16 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: "white",
         fontWeight: '500'
-    }
+    },
+    bottomButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        opacity: 0.9,
+        height: 40,
+        position: 'absolute',
+        left: 10,
+        top: Dimensions.get('window').height - 45 - (DeviceInfo.isIPhoneX_deprecated ? 34 : 0),
+        right: 10,
+        borderRadius: 3
+    },
 });
