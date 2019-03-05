@@ -19,16 +19,18 @@ import BackPressHandler from "../common/BackPressHandler"
 import actions from "../action"
 import ViewUtil from "../util/ViewUtil"
 import FavoriteDao from "../expand/dao/FavoriteDao"
-import {FLAG_STORAGE, PAGE_SIZE} from "../constant"
+import {FLAG_LANGUAGE, FLAG_STORAGE, PAGE_SIZE} from "../constant"
 import Toast from 'react-native-easy-toast'
 import PopularItem from "../common/PopularItem"
 import Utils from "../util/Utils"
+import LanguageDao from "../expand/dao/LanguageDao";
 class SearchPage extends Component<Props> {
     constructor(props){
         super(props)
         this.inputKey = ''
         this.params = this.props.navigation.state.params
         this.favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular)
+        this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key)
         this.backPress = new BackPressHandler({backPress:() => this.goBack})
     }
     goBack() {
@@ -56,7 +58,7 @@ class SearchPage extends Component<Props> {
         return (
             <TextInput
                 ref="input"
-                placeholder={'C#'}
+                placeholder={this.props.search.inputKey || '请输入'}
                 onChangeText={text => this.inputKey = text}
                 style={styles.textInput}
                 placeholderTextColor={'rgba(255,255,255,0.6)'}
@@ -106,6 +108,17 @@ class SearchPage extends Component<Props> {
                 />
                 <Text>正在加载更多</Text>
             </View>
+    }
+    saveKey() {
+        if (Utils.checkKeyIsExist(this.props.keys,this.inputKey)) return
+        let key = {
+            "path": this.inputKey,
+            "name": this.inputKey,
+            "checked": true
+        };
+        this.props.keys.unshift(key) // 将key添加到数组的开头
+        this.languageDao.save(this.props.keys)
+        this.refs.toast.show(key.name + '保存成功')
     }
     render() {
         const { projectModes,isLoading } = this.props.search
@@ -157,7 +170,7 @@ class SearchPage extends Component<Props> {
                     this.props.search.showBottomButton ? <TouchableOpacity
                         style={[styles.bottomButton, { backgroundColor: this.props.theme.themeColor }]}
                         onPress={() => {
-                            // this.saveKey();
+                            this.saveKey();
                         }}
                     >
                         <View style={{justifyContent: 'center'}}>
