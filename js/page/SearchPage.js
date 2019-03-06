@@ -25,6 +25,8 @@ import PopularItem from "../common/PopularItem"
 import Utils from "../util/Utils"
 import LanguageDao from "../expand/dao/LanguageDao";
 import {loadLanguage} from "../action/language";
+import EventBus from "react-native-event-bus";
+import { FAVORITE_CHANGED_POPULAR } from "../emit";
 class SearchPage extends Component<Props> {
     constructor(props){
         super(props)
@@ -46,6 +48,7 @@ class SearchPage extends Component<Props> {
     }
     componentWillUnmount() {
         this.backPress.componentWillUnmount()
+        this.props.search.projectModes = []
     }
     loadData(loadMore) {
         const {onLoadMoreSearch, onSearch, search, keys} = this.props
@@ -78,11 +81,15 @@ class SearchPage extends Component<Props> {
         }
 
     }
+    onFavorite(item,isFavorite) {
+        Utils.onFavorite(this.favoriteDao,item,isFavorite,FLAG_STORAGE.flag_popular)
+        setTimeout(()=> EventBus.getInstance().fireEvent(FAVORITE_CHANGED_POPULAR),100)
+    }
     renderRightButton() {
         const { search } = this.props
         return (<TouchableOpacity
                 onPress={() => {
-                    this.refs.input.blur() //收起键盘
+                    this.refs.input.blur() // 收起键盘
                     this.onRightButtonClick()
                 }}
             >
@@ -102,7 +109,7 @@ class SearchPage extends Component<Props> {
                 flag: FLAG_STORAGE.flag_popular,
                 callback: callback
             })}
-            onFavorite={(item,isFavorite)=> Utils.onFavorite(this.favoriteDao,item,isFavorite,FLAG_STORAGE.flag_popular)}
+            onFavorite={(item,isFavorite)=> this.onFavorite(item,isFavorite)}
         />
     }
     genIndicator() {
@@ -115,8 +122,9 @@ class SearchPage extends Component<Props> {
             </View>
     }
     saveKey() {
+        if(!this.inputKey) return
         if (Utils.checkKeyIsExist(this.props.keys,this.inputKey)) {
-            this.refs.toast.show(key.name + '已存在')
+            this.refs.toast.show(this.inputKey + '已存在')
             return
         }
         let key = {

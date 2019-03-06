@@ -12,7 +12,7 @@ import { createMaterialTopTabNavigator } from 'react-navigation'
 import actions from "../action";
 import PopularItem from "../common/PopularItem";
 import Toast from 'react-native-easy-toast'
-import {PAGE_SIZE, POPULAR_URL, FLAG_STORAGE, FLAG_LANGUAGE} from '../constant'
+import {PAGE_SIZE, POPULAR_URL, FLAG_STORAGE, FLAG_LANGUAGE, QUERY_STR} from '../constant'
 import NavigationBar from "../common/NavigationBar";
 import NavigationUtil from "../navigator/NavigationUtil";
 import FavoriteDao from "../expand/dao/FavoriteDao";
@@ -117,7 +117,8 @@ class PopularTab extends Component<Props> {
         this.onLoadData(false)
         EventBus.getInstance().addListener(FAVORITE_CHANGED_POPULAR, this.favoriteChangeListener = () => {
             this.isFavoriteChanged = true
-        });
+            this.onLoadData(false, true)
+        })
         EventBus.getInstance().addListener(BOTTOM_TAB_SELECT, this.bottomTabSelectListener = (data) => {
             if (data.to === 0 && this.isFavoriteChanged) {
                 this.onLoadData(false, true)
@@ -143,7 +144,7 @@ class PopularTab extends Component<Props> {
         }
     }
     genFetchUrl(key) {
-        return `${POPULAR_URL}${key}`
+        return `${POPULAR_URL}${key}${QUERY_STR}`
     }
     renderItem(item) {
         return <PopularItem

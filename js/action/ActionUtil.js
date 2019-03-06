@@ -31,6 +31,7 @@ export async function dealItems(showItems,favoriteDao,callback) {
     } catch (e) {
         console.log(e)
     }
+    console.log('==================' + keys)
     showItems = showItems.map((item)=> {
         item.isFavorite = Utils.checkFavorite(item,keys)
         return item
