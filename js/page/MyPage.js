@@ -12,7 +12,7 @@ import { connect } from "react-redux";
 import NavigationBar from "../common/NavigationBar";
 import { FLAG_LANGUAGE } from "../constant";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import {MORE_MENU} from "../common/MoreMenu";
+import { MORE_MENU } from "../common/MoreMenu";
 import GlobalStyles from "../res/style/GlobalStyles";
 import ViewUtil from "../util/ViewUtil";
 import NavigationUtil from "../navigator/NavigationUtil";
@@ -36,9 +36,10 @@ class MyPage extends Component<Props> {
             case MORE_MENU.Custom_Key:
             case MORE_MENU.Custom_Language:
             case MORE_MENU.Remove_Key:
+            case MORE_MENU.Remove_Language:
                 RouteName = 'CustomKeyPage'
-                params.isRemoveKey = menu === MORE_MENU.Remove_Key
-                params.flag = menu === MORE_MENU.Custom_Key ? FLAG_LANGUAGE.flag_key : FLAG_LANGUAGE.flag_language
+                params.isRemoveKey = (menu === MORE_MENU.Remove_Key || menu === MORE_MENU.Remove_Language)
+                params.flag = (menu === MORE_MENU.Custom_Key || menu === MORE_MENU.Remove_Key) ? FLAG_LANGUAGE.flag_key : FLAG_LANGUAGE.flag_language
                 break
             case MORE_MENU.Sort_Key:
             case MORE_MENU.Sort_Language:
@@ -109,7 +110,7 @@ class MyPage extends Component<Props> {
                     {this.getItem(MORE_MENU.Sort_Language)}
                     {/*语言移除*/}
                     <View style={GlobalStyles.line}/>
-                    {this.getItem(MORE_MENU.Remove_Key)}
+                    {this.getItem(MORE_MENU.Remove_Language)}
 
                     {/*最热管理*/}
                     <Text style={styles.groupTitle}>最热管理</Text>
@@ -118,6 +119,8 @@ class MyPage extends Component<Props> {
                     {/*标签排序*/}
                     <View style={GlobalStyles.line}/>
                     {this.getItem(MORE_MENU.Sort_Key)}
+                    <View style={GlobalStyles.line}/>
+                    {this.getItem(MORE_MENU.Remove_Key)}
 
                     {/*设置*/}
                     <Text style={styles.groupTitle}>设置</Text>
